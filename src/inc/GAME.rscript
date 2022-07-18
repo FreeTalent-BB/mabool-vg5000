@@ -1,0 +1,79 @@
+#label play_game
+	NBOMB = 0
+	
+#label game_loop
+	SX = StickX( 2 )
+	SY = StickY( 2 )
+	A = Action( 2 )
+	
+	If SX = 1 And ZX < 20 Then Goto @move_right
+	If SX = 255 And ZX > 1 Then Goto @move_left
+	If SY = 1 And ZY < 12 Then Goto @move_down
+	If SY = 255 And ZY > 1 Then Goto @move_up
+	
+	goto @play_game
+
+#label move_right
+	
+	If MAP$( ZX + 1, ZY ) = "01" Or MAP$( ZX + 1, ZY ) = "06" Then Goto @game_loop
+	Eg LVLCOL,0,0 : CursorX JX : CursorY JY
+	Gosub @restore_tile
+	
+	ZX = ZX + 1 : JX = JX + 2 : CursorX JX : CursorY JY 
+	If MAP$( ZX, ZY ) = "02" Then Print Chr$( 51 )+Chr$( 52 )+BRK$+Chr$( 89 )+Chr$( 90 )
+	Gosub @update_tile
+	Display 2
+	
+	Goto @move_right
+	
+#label move_left
+	
+	If MAP$( ZX - 1, ZY ) = "01" Or MAP$( ZX - 1, ZY ) = "06" Then Goto @game_loop
+	Eg LVLCOL,0,0 : CursorX JX : CursorY JY
+	Gosub @restore_tile
+	
+	ZX = ZX - 1 : JX = JX - 2 : CursorX JX : CursorY JY 
+	Gosub @update_tile
+	Display 2
+
+	Goto @move_left
+
+#label move_up
+	
+	If MAP$( ZX, ZY - 1 ) = "01" Or MAP$( ZX, ZY - 1 ) = "06" Then Goto @game_loop
+	Eg LVLCOL,0,0 : CursorX JX : CursorY JY
+	Gosub @restore_tile
+	
+	ZY = ZY - 1 : JY = JY - 2 : CursorX JX : CursorY JY 
+	Gosub @update_tile
+	Display 2
+
+	Goto @move_up
+
+#label move_down
+	
+	If MAP$( ZX, ZY + 1 ) = "01" Or MAP$( ZX, ZY + 1 ) = "06" Then Goto @game_loop
+	Eg LVLCOL,0,0 : CursorX JX : CursorY JY
+	Gosub @restore_tile
+	
+	ZY = ZY + 1 : JY = JY + 1 : CursorX JX : CursorY JY 
+	Gosub @update_tile
+	Display 2
+
+	Goto @move_down
+
+#label_restore_tile
+	If MAP$( ZX, ZY ) = "02" Or MAP$( ZX, ZY ) = "0B" Then Print Chr$( 34 )+Chr$( 34 )+BRK$+Chr$( 34 )+Chr$( 34 )
+	If MAP$( ZX, ZY ) = "03" Then Print Chr$( 35 )+Chr$( 36 )+BRK$+Chr$( 73 )+Chr$( 74 )
+	If MAP$( ZX, ZY ) = "04" Then Print Chr$( 37 )+Chr$( 38 )+BRK$+Chr$( 75 )+Chr$( 76 )
+	If MAP$( ZX, ZY ) = "05" Then Print Chr$( 114 )+Chr$( 114 )+BRK$+Chr$( 114 )+Chr$( 114 ) : MAP$(ZX, ZY ) = "00"
+	Return
+	
+#label update_tile
+	If MAP$( ZX, ZY ) = "03" Then Print Chr$( 53 )+Chr$( 54 )+BRK$+Chr$( 91 )+Chr$( 92 ) 
+	If MAP$( ZX, ZY ) = "04" Then Print Chr$( 55 )+Chr$( 56 )+BRK$+Chr$( 93 )+Chr$( 94 )
+	If MAP$( ZX, ZY ) = "05" Then Print Chr$( 57 )+Chr$( 58 )+BRK$+Chr$( 95 )+Chr$( 96 )
+	If MAP$( ZX, ZY ) = "10" Then Print Chr$( 51 )+Chr$( 52 )+BRK$+Chr$( 89 )+Chr$( 90 ) : MAP$( ZX, ZY ) = "02" : NETOIL = NETOIL - 1
+	If MAP$( ZX, ZY ) = "12" Then Print Chr$( 51 )+Chr$( 52 )+BRK$+Chr$( 89 )+Chr$( 90 ) : MAP$( ZX, ZY ) = "02" : NCLE = NCLE - 1
+	If MAP$( ZX, ZY ) = "14" Then Print Chr$( 51 )+Chr$( 52 )+BRK$+Chr$( 89 )+Chr$( 90 ) : MAP$( ZX, ZY ) = "02" : NBOMB = NBOMB + 1
+	Return

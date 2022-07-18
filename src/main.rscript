@@ -1,0 +1,40 @@
+#INCLUDE inc.VARS
+#INCLUDE inc.SPRITES
+#INCLUDE inc.FONT
+#INCLUDE inc.MAPDATA
+#INCLUDE inc.GAME
+
+;#label main
+;Init 7,0
+;Input "1=";n1
+;Input "2=";n2
+;Input "3=";n3
+;Input "4=";n4
+
+;Init 7,0 : Eg 6,7,0 
+;Print Chr$(n1)+Chr$(n2)+BRK$;Chr$(n3)+Chr$(n4);
+;Gr 6,7,0
+;#label loop
+;	A = Key(0)
+;	If A > 0 Then Goto @main 
+;Goto @loop
+
+Gosub @load_level
+Gosub @show_level
+Goto @play_game
+End
+
+#INCLUDE inc.MAP
+
+
+#label update_infos
+	Et 7,0,0 : CursorX 5 : CursorY 24
+	I1$ = Mid$( Str$( SC ), 2, Len( Str$( SC ) ) - 1 )
+	If Len( I1$ ) < 6 Then For R = Len( I1$ ) To 6 : I1$ = "0" + I1$ : Next R
+	I2$ = Mid$( Str$( LEVEL ), 2, Len( Str$( LEVEL ) ) - 1 )
+	If Len( I2$ ) < 10 Then I2$ = "0" + I2$ 	
+	I3$ = Mid$( Str$( LEVEL ), 2, Len( Str$( LV ) ) - 1 )
+	If Len( I3$ ) < 10 Then I3$ = "0" + I3$ 
+	
+	Print "SCORE " + I1$ + " STAGE " + I2$ + " LIVES " + I3$;
+	Return
