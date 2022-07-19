@@ -1,4 +1,21 @@
-Clear 1000 : LVLCOL = 1 : LEVEL = 1 : Dim MAP$( 20, 12 )
-JX = 0 : JY = 0 : ZX = 0 : ZY = 0 : SC = 0 : LV = 4 : PX = 0 : PY = 0
-NETOIL = 0 : NCLE = 0 : NBOMB = 0
-BRK$ = Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )
+#var lvlcol
+#var level
+#var map$
+#var jx
+#var jy
+#var zx
+#var zy
+#var sc
+#var lv
+#var px
+#var py
+#var netoil
+#var ncle
+#var nbomb
+#var brk$
+  
+Clear 1000 : !LVLCOL = 1 : !LEVEL = 1 : Dim_!MAP$( 20, 12 )/
+!JX = 0 : !JY = 0 : !ZX = 0 : !ZY = 0
+!SC = 0 : !LV = 4 : !PX = 0 : !PY = 0/
+!NETOIL = 0 : !NCLE = 0 : !NBOMB = 0/
+!BRK$ = ""+Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )

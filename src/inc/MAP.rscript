@@ -2,113 +2,113 @@
 ; Load the current level
 ;
 #label load_level
-	Init 0,0
+	Init 0,0/
 	L = 1 : C = 1
-	For R = 1 To 12
+	For R = 1 To 12/
 		Read LIN$ : C = 1
-		For T = 1 To 40 Step 2
-			M$ = Mid$( LIN$, T, 2 )
-			MAP$( C, L ) = M$
-			C = C + 1
+		For T = 1 To 40 Step 2/
+			M$ = Mid$( LIN$, T, 2 )/
+			!MAP$( C, L ) = M$/
+			C = C + 1/
 		Next T
-		L = L + 1
-	Next R	
+		L = L + 1/
+	Next R/
 	Return
 
 ;
 ; Show the current level
 ;
 #label show_level
-	MX = 0 : MY = 0 : PC = 0 : NBETOIL = 0 : NBCLEF = 0
-	For L = 1 To 12
-		For C = 1 To 20
+	MX = 0 : MY = 0 : PC = 0 : !NETOIL = 0 : !NCLE = 0
+	For L = 1 To 12/
+		For C = 1 To 20/
 			
-			M$ = MAP$( C, L )
-			Eg LVLCOL,0,0 : CursorX MX : CursorY MY
+			M$ = !MAP$( C, L )/
+			Eg !LVLCOL,0,0 : CursorX !MX : CursorY !MY
 			
 			; Vide
 			;If M$ = "00" Then Print Chr$( 114 )+Chr$( 114 )+BRK$+Chr$( 114 )+Chr$( 114 )
 			
 			; Mur
-			If M$ = "01" Then Print Chr$( 32 )+Chr$( 33 )+BRK$+Chr$( 71 )+Chr$( 72 )
+			If M$ = "01" Then Print Chr$( 32 )+Chr$( 33 )+!BRK$+Chr$( 71 )+Chr$( 72 )
 			
 			; Sol
-			If M$ = "02" Then Print Chr$( 34 )+Chr$( 34 )+BRK$+Chr$( 34 )+Chr$( 34 )
+			If M$ = "02" Then Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )
 			
 			; Elevator
-			If M$ = "03" Then Print Chr$( 35 )+Chr$( 36 )+BRK$+Chr$( 73 )+Chr$( 74 )
+			If M$ = "03" Then Print Chr$( 35 )+Chr$( 36 )+!BRK$+Chr$( 73 )+Chr$( 74 )
 			
 			; Teleporter
-			If M$ = "04" Then Print Chr$( 37 )+Chr$( 38 )+BRK$+Chr$( 75 )+Chr$( 76 )
+			If M$ = "04" Then Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 75 )+Chr$( 76 )
 			
 			; Dalle cassable
-			If M$ = "05" Then Print Chr$( 39 )+Chr$( 40 )+BRK$+Chr$( 77 )+Chr$( 78 )
+			If M$ = "05" Then Print Chr$( 39 )+Chr$( 40 )+!BRK$+Chr$( 77 )+Chr$( 78 )
 			
 			; Porte fermée
-			If M$ = "06" Then Print Chr$( 41 )+Chr$( 42 )+BRK$+Chr$( 79 )+Chr$( 80 ) : PX = C : PY = L
+			If M$ = "06" Then Print Chr$( 41 )+Chr$( 42 )+!BRK$+Chr$( 79 )+Chr$( 80 ) : PX = C : PY = L
 			
 			; Porte ouverte
-			If M$ = "07" Then Print Chr$( 43 )+Chr$( 44 )+BRK$+Chr$( 81 )+Chr$( 82 )
+			If M$ = "07" Then Print Chr$( 43 )+Chr$( 44 )+!BRK$+Chr$( 81 )+Chr$( 82 )
 			
 			; Interrupteur ON
-			If M$ = "08" Then Print Chr$( 45 )+Chr$( 46 )+BRK$+Chr$( 83 )+Chr$( 84 )
+			If M$ = "08" Then Print Chr$( 45 )+Chr$( 46 )+!BRK$+Chr$( 83 )+Chr$( 84 )
 			
 			; Interrupteur OFF
-			If M$ = "09" Then Print Chr$( 47 )+Chr$( 48 )+BRK$+Chr$( 85 )+Chr$( 86 )
+			If M$ = "09" Then Print Chr$( 47 )+Chr$( 48 )+!BRK$+Chr$( 85 )+Chr$( 86 )
 			
 			; Mabool sol
-			If M$ = "0B" Then Print Chr$( 51 )+Chr$( 52 )+BRK$+Chr$( 89 )+Chr$( 90 ) : JX = MX : JY = MY : ZX = C : ZY = L
+			If M$ = "0B" Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 ) : !JX = MX : !JY = MY : !ZX = C : !ZY = L
 			
 			; Mabool elevator
-			If M$ = "0C" Then Print Chr$( 53 )+Chr$( 54 )+BRK$+Chr$( 91 )+Chr$( 92 )
+			If M$ = "0C" Then Print Chr$( 53 )+Chr$( 54 )+!BRK$+Chr$( 91 )+Chr$( 92 )
 			
 			; Mabool Porte / teleporter
-			If M$ = "0D" Then Print Chr$( 55 )+Chr$( 56 )+BRK$+Chr$( 93 )+Chr$( 94 )
+			If M$ = "0D" Then Print Chr$( 55 )+Chr$( 56 )+!BRK$+Chr$( 93 )+Chr$( 94 )
 			
 			; Mabool dalle cassable
-			If M$ = "0E" Then Print Chr$( 57 )+Chr$( 58 )+BRK$+Chr$( 95 )+Chr$( 96 )
+			If M$ = "0E" Then Print Chr$( 57 )+Chr$( 58 )+!BRK$+Chr$( 95 )+Chr$( 96 )
 			
 			; Etoile sol
-			If M$ = "10" Then Print Chr$( 61 )+Chr$( 62 )+BRK$+Chr$( 99 )+Chr$( 100 ) : NETOIL = NETOIL + 1
+			If M$ = "10" Then Print Chr$( 61 )+Chr$( 62 )+!BRK$+Chr$( 99 )+Chr$( 100 ) : !NETOIL = !NETOIL + 1
 			
 			; Clé sol
-			If M$ = "12" Then Print Chr$( 65 )+Chr$( 66 )+BRK$+Chr$( 103 )+Chr$( 104 ) : NCLE = NCLE + 1
+			If M$ = "12" Then Print Chr$( 65 )+Chr$( 66 )+!BRK$+Chr$( 103 )+Chr$( 104 ) : !NCLE = !NCLE + 1
 			
 			; Bombe sol
-			If M$ = "14" Then Print Chr$( 69 )+Chr$( 70 )+BRK$+Chr$( 107 )+Chr$( 108 )
+			If M$ = "14" Then Print Chr$( 69 )+Chr$( 70 )+!BRK$+Chr$( 107 )+Chr$( 108 )
 			
 			; Laser Horiz
-			If M$ = "15" Then Print Chr$( 109 )+Chr$( 110 )+BRK$+Chr$( 109 )+Chr$( 110 )
+			If M$ = "15" Then Print Chr$( 109 )+Chr$( 110 )+!BRK$+Chr$( 109 )+Chr$( 110 )
 			
 			; Laser Vertic
-			If M$ = "16" Then Print Chr$( 111 )+Chr$( 111 )+BRK$+Chr$( 112 )+Chr$( 112 )
-			MX = MX + 2 : PC = PC + 1
+			If M$ = "16" Then Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 112 )+Chr$( 112 )
+			MX = MX + 2 : PC = PC + 1/
 
-			Et 7,0,0 : CursorX 12 : CursorY 24
+			Et 7,0,0 : CursorX 12 : CursorY 24/
 			P$ = Str$( Int( ( 100 / 240 ) * PC ) )
-			Print "LOADING..." + P$ + " %";
-			Display 2
-		Next C
-		MY = MY + 2 : MX = 0
-	Next L
-	Gosub @update_infos
+			Print "LOADING..." + P$ + "_%";/
+			Display 2/
+		Next C/
+		MY = MY + 2 : MX = 0/
+	Next L/
+	Gosub @update_infos/
 	Return
 
 ;
 ; Link to the data range for each level
 ;	
 #label lmap1
-	Restore @map1
+	Restore @map1/
 	Return
 
 #label lmap2
-	Restore @map2
+	Restore @map2/
 	Return
 
 #label lmap3
-	Restore @map3
+	Restore @map3/
 	Return
 
 #label lmap4
-	Restore @map4
+	Restore @map4/
 	Return	

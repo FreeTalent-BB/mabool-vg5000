@@ -19,9 +19,9 @@
 ;	If A > 0 Then Goto @main 
 ;Goto @loop
 
-Gosub @load_level
-Gosub @show_level
-Goto @play_game
+Gosub @load_level/
+Gosub @show_level/
+Goto @play_game/
 End
 
 #INCLUDE inc.MAP
@@ -29,12 +29,12 @@ End
 
 #label update_infos
 	Et 7,0,0 : CursorX 5 : CursorY 24
-	I1$ = Mid$( Str$( SC ), 2, Len( Str$( SC ) ) - 1 )
+	I1$ = Mid$( Str$( !SC ), 2, Len( Str$( !SC ) ) - 1 )/
 	If Len( I1$ ) < 6 Then For R = Len( I1$ ) To 6 : I1$ = "0" + I1$ : Next R
-	I2$ = Mid$( Str$( LEVEL ), 2, Len( Str$( LEVEL ) ) - 1 )
+	I2$ = Mid$( Str$( !LEVEL ), 2, Len( Str$( !LEVEL ) ) - 1 )/
 	If Len( I2$ ) < 10 Then I2$ = "0" + I2$ 	
-	I3$ = Mid$( Str$( LEVEL ), 2, Len( Str$( LV ) ) - 1 )
+	I3$ = Mid$( Str$( !LV ), 2, Len( Str$( !LV ) ) - 1 )/
 	If Len( I3$ ) < 10 Then I3$ = "0" + I3$ 
 	
-	Print "SCORE " + I1$ + " STAGE " + I2$ + " LIVES " + I3$;
+	Print "SCORE_" + I1$ + "_STAGE_" + I2$ + "_LIVES_" + I3$;/
 	Return

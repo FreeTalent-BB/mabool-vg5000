@@ -15,10 +15,13 @@ if( myArgs.length == 0 )
 
 var fileSource = undefined;
 var o = undefined;
-var nl = 10;
+var nl = 1;
 var vars = [];
 var labels = [];
 var labelNames = {};
+var vars = [];
+var varNames = {};
+var compress = false;
 var code = '';
 var lines = [];
 
@@ -77,7 +80,14 @@ if( myArgs.length > 0 )
                     process.exit( 1 );
                 }
                 o = value;
-                break;                
+                break;
+				
+            case '-c':
+                if( value.toLowerCase() == 'yes' )
+                {
+					compress = true;
+                }
+                break;				
         }
     }
 }
@@ -86,7 +96,14 @@ transpileFile( fileSource );
 code = '';
 if( lines.length > 0 )
 {
-    code = lines.join( "\r\n" );
+    code = lines.join( "\r\n" ) + "\r\n";
+}
+
+for( var l = 0; l < vars.length; l++ )
+{
+    code = code.strReplace( '!' + vars[ l ], varNames[ vars[ l ] ].toUpperCase() );
+    code = code.strReplace( '!' + vars[ l ].toUpperCase(), varNames[ vars[ l ] ].toUpperCase() );	
+    code = code.strReplace( '!' + vars[ l ].toLowerCase(), varNames[ vars[ l ] ].toUpperCase() );
 }
 
 for( var l = 0; l < labels.length; l++ )
@@ -94,6 +111,15 @@ for( var l = 0; l < labels.length; l++ )
     var label = labels[ l ];
     code = code.strReplace( '@' + label.name, label.line );
 }
+
+code = code.strReplace( '_', " " );
+
+// Patch VG5000 Code
+code = code.strReplace( 'SETEG0', "SETEG" );
+code = code.strReplace( 'seteg0', "seteg" );
+code = code.strReplace( 'SETET0', "SETET" );
+code = code.strReplace( 'setet0', "setet" );
+
 FS.writeFileSync( o + '/CODE.BAS', code, 'utf8' );
 
 console.log( 'Code BASIC created in ' + ( o + '/code.BAS' ) );
@@ -108,6 +134,9 @@ function transpileFile( file )
 
     var data = FS.readFileSync( file, 'utf8' ).toString();
     var dataLines = data.split( "\r" );
+	var finalLine = '';
+	var addLine = false;
+	
     if( dataLines )
     {
         for( var l = 0; l < dataLines.length; l++ )
@@ -120,7 +149,17 @@ function transpileFile( file )
             {
                 line = '';
             }
+            
+			if( line.substring( 0, 4 ).toLowerCase() == "rem " && compress )
+            {
+                line = '';
+            }
 
+			if( line.substring( 0, 1 ) == "'" && compress )
+            {
+                line = '';
+            }
+			
             if( line.substring( 0, 9 ).toLowerCase() == "#include " )
             {
                 var part = line.split( " " );
@@ -134,6 +173,33 @@ function transpileFile( file )
                 transpileFile( incFile );
                 line = '';
             }
+
+            if( line.substring( 0, 5 ).toLowerCase() == "#var " )
+            {
+                var part = line.split( " " );
+                if( part.length < 2 )
+                {
+                    console.log( 'ERROR: Variable name undefined at line ' + ( l + 1 ) + ' in ' + file );
+                    process.exit( 1 );                    
+                }
+
+                if( varNames[ part[ 1 ] ] )
+                {
+                    console.log( 'ERROR: Variable name already exists at line ' + ( l + 1 ) + ' in ' + file );
+                    process.exit( 1 );                      
+                }
+				
+				var letters = "abcdefghijklmnopqrstuvwxyz";
+				var nums = "0123456789";
+				var name = letters[ Math.round( Math.random() * 25 ) ] + nums[ Math.round(Math.random() * 9 ) ] + letters[ Math.round( Math.random() * 25 ) ];
+				if( part[ 1 ].indexOf( "$" ) > -1 )
+				{
+					name = name + '$';
+				}
+				vars.push( part[ 1 ] );
+				varNames[ part[ 1 ] ] = name;
+				line='';
+			}
 
             if( line.substring( 0, 7 ).toLowerCase() == "#label " )
             {
@@ -160,11 +226,52 @@ function transpileFile( file )
                 line = '';
             }
 
-            if( line != '' )
+			if( line != '' )
+			{
+				if( line.substring( line.length - 1, line.length ) == '/' )
+				{
+					if( finalLine != '' )
+					{
+						finalLine = finalLine + ' : ' + line.substring( 0, line.length - 1 );
+						
+					}
+					else
+					{
+						finalLine = line.substring( 0, line.length - 1 );
+					}
+				}
+				else
+				{
+					if( finalLine == '' )
+					{
+						finalLine = line;
+					}
+					else
+					{
+						finalLine = finalLine + ' : ' + line;						
+					}
+					addLine = true;
+				}
+			}
+
+            if( finalLine != '' && addLine )
             {
-                line = nl + ' ' + line;
-                lines.push( line );
-                nl = nl + 10;
+				if( compress )
+				{
+					finalLine = finalLine.strReplace( " ", "" );
+				}
+				
+				if( finalLine.length > 127 )
+				{
+					console.log( 'ERROR: Line too long at line ' + ( l + 1 ) + ' in ' + file );
+					process.exit( 1 );
+				}				
+                
+				finalLine = nl + ' ' + finalLine;
+                lines.push( finalLine );
+                nl = nl + 1;
+				finalLine = '';
+				addLine = false;
             }
 
         }
@@ -175,6 +282,7 @@ function showHelp()
 {
     console.log( 'Syntax in command line:' );
     console.log( 'rscript.js <filesource> [-o=<output>]' );
-    console.log( '-filesource: Absolute path of the main source file.' );
+    console.log( '<filesource>: Absolute path of the main source file.' );
+    console.log( '-c: Code compression. Remove all unnecessary spaces and the all comments.' );
     console.log( '-o: Output path for the generated BASIC file. (directory of the sourcefile by default)' );
 }
