@@ -12,6 +12,8 @@ if( myArgs.length == 0 )
     process.exit( 0 );
 }
 
+var w = -1;
+
 function showHelp()
 {
     console.log( 'Syntax in command line:' );
@@ -29,6 +31,8 @@ try
 		var code = "";
 		var opened = false;
 		var m = 0;
+		w = -1;
+		ln = 0;
 		for( var l = 0; l < lines.length; l++ )
 		{
 			var line = lines[ l ].trim();
@@ -45,11 +49,24 @@ try
 			{
 				line = '';
 				opened = false;
+				w = -1;
+				ln = 0;
 			}
 			
+
 			if( line != '' && opened )
 			{
-				code = code + 'DATA ' + convertData( line ) + '\r\n';
+				var data = convertData( line, ln );
+				if( data != '"*"' )
+				{				
+					code = code + 'DATA ' + data + '\r\n';
+					ln++;
+				}
+				else
+				{
+					code = code + 'DATA ' + data + '\r\n';
+					opened = false;
+				}
 			}
 		}
 	}
@@ -63,13 +80,17 @@ catch( e )
 	process.exit( 1 );
 }
 
-function convertData( line )
+function convertData( line, ln )
 {
 	var res = '';
 	var values = line.split( ',' );
 	if( values )
 	{
-		for( var v = 0; v < values.length; v++ )
+		if( w == -1 )
+		{
+			w = values.length;
+		}
+		for( var v = 0; v < w; v++ )
 		{
 			var value = -1;
 			if( values != '' )
@@ -79,12 +100,32 @@ function convertData( line )
 			
 			if( value != -1 && !isNaN( value ) )
 			{
-				value = value.toString( 16 );
-				if( ( value.length % 2 ) > 0 )
+				if( value == 15 )
 				{
-					value = "0" + value;
+					w = v;
+					if( ln == 0 )
+					{
+						res = w + ',"' + res + '"';
+					}
+					return res;
+
 				}
-				res = res + value.toUpperCase();
+				
+				if( value == 17 )
+				{
+					res = '"*"';
+					return res;
+				}
+				
+				if( value != -1 )
+				{
+					value = value.toString( 16 );
+					if( ( value.length % 2 ) > 0 )
+					{
+						value = "0" + value;
+					}
+					res = res + value.toUpperCase();
+				}
 			}
 		}
 	}

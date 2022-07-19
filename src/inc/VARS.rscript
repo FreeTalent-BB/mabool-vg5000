@@ -13,7 +13,11 @@
 #var ncle
 #var nbomb
 #var brk$
-  
+#var decal_x
+#var decal_y
+#var map_width
+#var map_height
+   
 Clear 1000 : !LVLCOL = 1 : !LEVEL = 1 : Dim_!MAP$( 20, 12 )/
 !JX = 0 : !JY = 0 : !ZX = 0 : !ZY = 0
 !SC = 0 : !LV = 4 : !PX = 0 : !PY = 0/

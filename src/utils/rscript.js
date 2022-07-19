@@ -120,6 +120,19 @@ code = code.strReplace( 'seteg0', "seteg" );
 code = code.strReplace( 'SETET0', "SETET" );
 code = code.strReplace( 'setet0', "setet" );
 
+
+// Verifie le code
+var lines = code.split( "\r\n" )
+if( lines )
+{
+	for( var l = 0; l < lines.length; l++ )
+	{
+		if( ( lines[ l ].length - lines[ l ].indexOf( " " ) )  > 127 )
+		{
+			console.log( 'WARN: Line too long at line ' + ( l + 1 ) + ' (' + ( lines[ l ].length - lines[ l ].indexOf( " " ) ) + ' characters)' );
+		}
+	}
+}
 FS.writeFileSync( o + '/CODE.BAS', code, 'utf8' );
 
 console.log( 'Code BASIC created in ' + ( o + '/code.BAS' ) );
@@ -260,12 +273,6 @@ function transpileFile( file )
 				{
 					finalLine = finalLine.strReplace( " ", "" );
 				}
-				
-				if( finalLine.length > 127 )
-				{
-					console.log( 'ERROR: Line too long at line ' + ( l + 1 ) + ' in ' + file );
-					process.exit( 1 );
-				}				
                 
 				finalLine = nl + ' ' + finalLine;
                 lines.push( finalLine );

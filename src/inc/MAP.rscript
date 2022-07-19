@@ -2,17 +2,25 @@
 ; Load the current level
 ;
 #label load_level
+	On !LEVEL Gosub @lmap1,@lmap2,@lmap3,@lmap4
 	Init 0,0/
-	L = 1 : C = 1
-	For R = 1 To 12/
-		Read LIN$ : C = 1
-		For T = 1 To 40 Step 2/
-			M$ = Mid$( LIN$, T, 2 )/
-			!MAP$( C, L ) = M$/
-			C = C + 1/
-		Next T
-		L = L + 1/
-	Next R/
+	Read !MAP_WIDTH/
+	!MAP_HEIGHT = 1
+
+#label read_data
+	Read LIN$ : C = 1 /
+	If LIN$ = "*" Then Goto @stop_read
+	For T = 1 To !MAP_WIDTH*2 Step 2/
+		M$ = Mid$( LIN$, T, 2 )/
+		!MAP$( C, !MAP_HEIGHT ) = M$/
+		C = C + 1/
+	Next T
+	!MAP_HEIGHT = !MAP_HEIGHT + 1/
+	Goto @read_data
+
+#label stop_read
+	!DECAL_X = ( 40 - ( !MAP_WIDTH * 2 ) ) / 2/
+	!DECAL_Y = ( 24 - ( !MAP_HEIGHT * 2 ) ) / 2/
 	Return
 
 ;
@@ -20,11 +28,11 @@
 ;
 #label show_level
 	MX = 0 : MY = 0 : PC = 0 : !NETOIL = 0 : !NCLE = 0
-	For L = 1 To 12/
-		For C = 1 To 20/
+	For L = 1 To !MAP_HEIGHT/
+		For C = 1 To !MAP_WIDTH/
 			
 			M$ = !MAP$( C, L )/
-			Eg !LVLCOL,0,0 : CursorX !MX : CursorY !MY
+			Eg !LVLCOL,0,0 : CursorX !DECAL_X + MX : CursorY !DECAL_Y + MY
 			
 			; Vide
 			;If M$ = "00" Then Print Chr$( 114 )+Chr$( 114 )+BRK$+Chr$( 114 )+Chr$( 114 )
@@ -84,10 +92,9 @@
 			If M$ = "16" Then Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 112 )+Chr$( 112 )
 			MX = MX + 2 : PC = PC + 1/
 
-			Et 7,0,0 : CursorX 12 : CursorY 24/
-			P$ = Str$( Int( ( 100 / 240 ) * PC ) )
-			Print "LOADING..." + P$ + "_%";/
-			Display 2/
+			Et 7,0,0 : CursorX 10 : CursorY 24/
+			P$ = Str$( Int( ( 100 / ( !MAP_WIDTH * !MAP_HEIGHT ) ) * PC ) )
+			Print "LOADING_STAGE..." + P$ + "_%";/
 		Next C/
 		MY = MY + 2 : MX = 0/
 	Next L/
