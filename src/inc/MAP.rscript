@@ -2,23 +2,30 @@
 ; Load the current level
 ;
 #label load_level
-	On !LEVEL Gosub @lmap1,@lmap2,@lmap3,@lmap4
-	Init 0,0/
+	if !LEVEL = 1 Then Restore @map1
+	if !LEVEL = 2 Then Restore @map2
+	if !LEVEL = 3 Then Restore @map3
+	if !LEVEL = 4 Then Restore @map4
+
+	Init 2,0/
 	Read !MAP_WIDTH/
 	!MAP_HEIGHT = 1
 
-#label read_data
-	Read LIN$ : C = 1 /
-	If LIN$ = "*" Then Goto @stop_read
-	For T = 1 To !MAP_WIDTH*2 Step 2/
-		M$ = Mid$( LIN$, T, 2 )/
-		!MAP$( C, !MAP_HEIGHT ) = M$/
-		C = C + 1/
-	Next T
-	!MAP_HEIGHT = !MAP_HEIGHT + 1/
-	Goto @read_data
+#label read_data1
+	Read T1$ : C = 1 : T = 1 /
+	If T1$ = "*" Then Goto @stop_read
+	
+#label read_data2	
+	T2$ = "&" + Chr$(34)+Mid$( T1$, T, 2 )+Chr$(34)/
+	Poke !ADR_LEVEL + ( ( C - 1 ) + ( ( !MAP_HEIGHT - 1 ) * 20 ) ), Val( T2$ )/
+	C = C + 1 : T =T + 2
+	If T < !MAP_WIDTH*2 Goto @read_data2
+
+	!MAP_HEIGHT = !MAP_HEIGHT + 1
+	Goto @read_data1
 
 #label stop_read
+	T1$="":T2$=""/
 	!DECAL_X = ( 40 - ( !MAP_WIDTH * 2 ) ) / 2/
 	!DECAL_Y = ( 24 - ( !MAP_HEIGHT * 2 ) ) / 2/
 	Return
@@ -28,94 +35,69 @@
 ;
 #label show_level
 	MX = 0 : MY = 0 : PC = 0 : !NETOIL = 0 : !NCLE = 0
-	For L = 1 To !MAP_HEIGHT/
-		For C = 1 To !MAP_WIDTH/
-			
-			M$ = !MAP$( C, L )/
-			Eg !LVLCOL,0,0 : CursorX !DECAL_X + MX : CursorY !DECAL_Y + MY
-			
-			; Vide
-			;If M$ = "00" Then Print Chr$( 114 )+Chr$( 114 )+BRK$+Chr$( 114 )+Chr$( 114 )
-			
-			; Mur
-			If M$ = "01" Then Print Chr$( 32 )+Chr$( 33 )+!BRK$+Chr$( 71 )+Chr$( 72 )
-			
-			; Sol
-			If M$ = "02" Then Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )
-			
-			; Elevator
-			If M$ = "03" Then Print Chr$( 35 )+Chr$( 36 )+!BRK$+Chr$( 73 )+Chr$( 74 )
-			
-			; Teleporter
-			If M$ = "04" Then Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 75 )+Chr$( 76 )
-			
-			; Dalle cassable
-			If M$ = "05" Then Print Chr$( 39 )+Chr$( 40 )+!BRK$+Chr$( 77 )+Chr$( 78 )
-			
-			; Porte fermée
-			If M$ = "06" Then Print Chr$( 41 )+Chr$( 42 )+!BRK$+Chr$( 79 )+Chr$( 80 ) : PX = C : PY = L
-			
-			; Porte ouverte
-			If M$ = "07" Then Print Chr$( 43 )+Chr$( 44 )+!BRK$+Chr$( 81 )+Chr$( 82 )
-			
-			; Interrupteur ON
-			If M$ = "08" Then Print Chr$( 45 )+Chr$( 46 )+!BRK$+Chr$( 83 )+Chr$( 84 )
-			
-			; Interrupteur OFF
-			If M$ = "09" Then Print Chr$( 47 )+Chr$( 48 )+!BRK$+Chr$( 85 )+Chr$( 86 )
-			
-			; Mabool sol
-			If M$ = "0B" Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 ) : !JX = MX : !JY = MY : !ZX = C : !ZY = L
-			
-			; Mabool elevator
-			If M$ = "0C" Then Print Chr$( 53 )+Chr$( 54 )+!BRK$+Chr$( 91 )+Chr$( 92 )
-			
-			; Mabool Porte / teleporter
-			If M$ = "0D" Then Print Chr$( 55 )+Chr$( 56 )+!BRK$+Chr$( 93 )+Chr$( 94 )
-			
-			; Mabool dalle cassable
-			If M$ = "0E" Then Print Chr$( 57 )+Chr$( 58 )+!BRK$+Chr$( 95 )+Chr$( 96 )
-			
-			; Etoile sol
-			If M$ = "10" Then Print Chr$( 61 )+Chr$( 62 )+!BRK$+Chr$( 99 )+Chr$( 100 ) : !NETOIL = !NETOIL + 1
-			
-			; Clé sol
-			If M$ = "12" Then Print Chr$( 65 )+Chr$( 66 )+!BRK$+Chr$( 103 )+Chr$( 104 ) : !NCLE = !NCLE + 1
-			
-			; Bombe sol
-			If M$ = "14" Then Print Chr$( 69 )+Chr$( 70 )+!BRK$+Chr$( 107 )+Chr$( 108 )
-			
-			; Laser Horiz
-			If M$ = "15" Then Print Chr$( 109 )+Chr$( 110 )+!BRK$+Chr$( 109 )+Chr$( 110 )
-			
-			; Laser Vertic
-			If M$ = "16" Then Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 112 )+Chr$( 112 )
-			MX = MX + 2 : PC = PC + 1/
+	L = 1
 
-			Et 7,0,0 : CursorX 10 : CursorY 24/
-			P$ = Str$( Int( ( 100 / ( !MAP_WIDTH * !MAP_HEIGHT ) ) * PC ) )
-			Print "LOADING_STAGE..." + P$ + "_%";/
-		Next C/
-		MY = MY + 2 : MX = 0/
-	Next L/
+#label draw_line1
+	C = 1
+		
+#label draw_line2
+
+	MV = Peek( !ADR_LEVEL + ( ( C - 1 ) + ( ( L - 1 ) * 20 ) ) )/
+	Eg !LVLCOL,0,0 : CursorX !DECAL_X + MX : CursorY !DECAL_Y + MY
+	
+	
+	; Mur
+	If MV = 1 Then Print Chr$( 32 )+Chr$( 33 )+!BRK$+Chr$( 71 )+Chr$( 72 )
+	
+	; Sol
+	If MV = 2 Then Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )
+	
+	; Elevator
+	If MV = 3 Then Print Chr$( 35 )+Chr$( 36 )+!BRK$+Chr$( 73 )+Chr$( 74 )
+	
+	; Teleporter
+	If MV = 4 Then Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 75 )+Chr$( 76 )
+	
+	; Dalle cassable
+	If MV = 5 Then Print Chr$( 39 )+Chr$( 40 )+!BRK$+Chr$( 77 )+Chr$( 78 )
+	
+	; Porte fermée
+	If MV = 6 Then Print Chr$( 41 )+Chr$( 42 )+!BRK$+Chr$( 79 )+Chr$( 80 ) : !PX = C : !PY = L : !ADR_DOOR = !ADR_LEVEL + ( ( C - 1 ) + ( ( L - 1 ) * 20 ) )
+	
+	
+	; Interrupteur ON
+	If MV = 8 Then Print Chr$( 45 )+Chr$( 46 )+!BRK$+Chr$( 83 )+Chr$( 84 )
+	
+	; Mabool sol
+	If MV = 11 Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 ) : !JX = MX : !JY = MY : !ADR_PLAYER = !ADR_LEVEL + ( ( C - 1 ) + ( ( L - 1 ) * 20 ) )
+	
+	; Etoile sol
+	If MV = 16 Then Print Chr$( 61 )+Chr$( 62 )+!BRK$+Chr$( 99 )+Chr$( 100 ) : !NETOIL = !NETOIL + 1
+	
+	; Clé sol
+	If MV = 18 Then Print Chr$( 65 )+Chr$( 66 )+!BRK$+Chr$( 103 )+Chr$( 104 ) : !NCLE = !NCLE + 1
+	
+	; Bombe sol
+	If MV = 20 Then Print Chr$( 69 )+Chr$( 70 )+!BRK$+Chr$( 107 )+Chr$( 108 )
+	
+	; Laser Horiz
+	If MV = 21 Then Print Chr$( 109 )+Chr$( 110 )+!BRK$+Chr$( 109 )+Chr$( 110 )
+	
+	; Laser Vertic
+	If MV = 22 Then Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 112 )+Chr$( 112 )
+	MX = MX + 2 : PC = PC + 1/
+
+	Et 7,0,0 : CursorX 10 : CursorY 24/
+	T1$ = "LOADING_STAGE..." + Str$( Int( ( 100 / ( !MAP_WIDTH * !MAP_HEIGHT ) ) * PC ) ) + "_%"/
+	Print T1$;
+
+	C = C + 1
+	If C < !MAP_WIDTH Then Goto @draw_line2
+
+	MY = MY + 2 : MX = 0/
+	L = L + 1
+	If L < !MAP_HEIGHT Then Goto @draw_line1
+	
 	Gosub @update_infos/
+	T1$ = ""
 	Return
-
-;
-; Link to the data range for each level
-;	
-#label lmap1
-	Restore @map1/
-	Return
-
-#label lmap2
-	Restore @map2/
-	Return
-
-#label lmap3
-	Restore @map3/
-	Return
-
-#label lmap4
-	Restore @map4/
-	Return	

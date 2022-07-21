@@ -119,7 +119,10 @@ code = code.strReplace( 'SETEG0', "SETEG" );
 code = code.strReplace( 'seteg0', "seteg" );
 code = code.strReplace( 'SETET0', "SETET" );
 code = code.strReplace( 'setet0', "setet" );
-
+code = code.strReplace( "PRINT", '?' );
+code = code.strReplace( "print", '?' );
+code = code.strReplace( "Print", '?' );
+ 
 
 // Verifie le code
 var lines = code.split( "\r\n" )

@@ -1,6 +1,6 @@
 #INCLUDE inc.VARS
-#INCLUDE inc.FONT
-#INCLUDE inc.SPRITES
+;#INCLUDE inc.FONT
+;#INCLUDE inc.SPRITES
 Goto @main_start
 
 #INCLUDE inc.MAP
@@ -8,24 +8,10 @@ Goto @main_start
 
 #INCLUDE inc.MAPDATA
 
-;#label main
-;Init 7,0
-;Input "1=";n1
-;Input "2=";n2
-;Input "3=";n3
-;Input "4=";n4
-
-;Init 7,0 : Eg 6,7,0 
-;Print Chr$(n1)+Chr$(n2)+BRK$;Chr$(n3)+Chr$(n4);
-;Gr 6,7,0
-;#label loop
-;	A = Key(0)
-;	If A > 0 Then Goto @main 
-;Goto @loop
-
 #label main_start
-Gosub @load_level/
-Gosub @show_level/
-Goto @play_game/
-End
+	Gosub @load_level/
+	Gosub @show_level/
+	Goto @play_game/
+	
+	End
 
