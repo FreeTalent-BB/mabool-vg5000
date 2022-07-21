@@ -1,0 +1,17 @@
+#tmx2bas "source":"./map/map.tmx","c":"rle","f":"str","rl":"yes","max":16,"o":"./inc/MAPDATA.rscript"
+#INCLUDE inc.VARS
+
+Goto @main_start
+
+#INCLUDE inc.MAP
+#INCLUDE inc.GAME
+
+#INCLUDE inc.MAPDATA
+
+#label main_start
+	Gosub @load_level
+	Gosub @show_level
+	Goto @play_game
+	
+	End
+

@@ -2,18 +2,7 @@ const FS = require( 'fs' );
 const PATH = require( 'path' );
 const { createCanvas, loadImage } = require( 'canvas' );
 
-console.log( 'IMG2CHAR v1.0-0 by Baptiste Bideaux.' );
-console.log( '------------------------------------' );
-console.log( ' ' );
-
-const myArgs = process.argv.slice(2);
-if( myArgs.length == 0 )
-{
-    showHelp();
-    process.exit( 0 );
-}
-
-var imgFile = checkImage();
+var imgFile = "";
 var canvas = undefined;
 var ctx = undefined;
 var imgSource = undefined;
@@ -22,92 +11,171 @@ var c = '#FFFFFF';
 var s = 0;
 var m = 'cpc';
 var ns = 32;
-var o = PATH.dirname( imgFile );
+var o = PATH.dirname( imgFile ) + '/output.bas';
+var cl = "no";
+var eteg = "et";
 
-if( myArgs.length > 1 )
+function img2char( options, cb )
 {
-    for( var a = 1; a < myArgs.length; a++ )
-    {
-        var arg = myArgs[ a ];
-        if( arg.indexOf( '-' ) != 0 )
-        {
-            console.log( 'ERROR: Invalid argument in ' + arg );
-            process.exit( 1 );
-        }
+	imgFile = options.source;
+	
+	n = (options.n)?options.n:127;
+	c = (options.c)?options.c:"#FFFFFF";
+	o = (options.o)?options.o:"./output.bas";
+	s = (options.s)?options.s:0;
+	m = (options.m)?options.m:"cpc";
+	ns = (options.ns)?options.ns:32;
+	cl = (options.cl)?options.cl:"no";
+	eteg= (options.eteg)?options.eteg:"et";
+	convertIMG( cb );	
+}
+exports.img2char = img2char
 
-        if( arg.indexOf( '=' ) < 2 )
-        {
-            console.log( 'ERROR: Invalid argument in ' + arg );
-            process.exit( 1 );
-        }
-        var command = arg.split( '=' )[ 0 ];
-        var value = arg.split( '=' )[ 1 ];
-        switch( command.toLowerCase() )
-        {
-            case '-n':
-                if( isNaN( value ) )
-                {
-                    console.log( 'ERROR: Invalid value in "-n" argument. Integer waiting.' );
-                    process.exit( 1 );
-                }
-                n = parseInt( value );
-                break;
+var myArgs = [];
+if( PATH.basename( process.argv[ 1 ] ).toLowerCase() == 'img2char.js' )
+{
 
-            case '-c':
-                if( value.indexOf( '#' ) != 0 || value.length < 7 )
-                {
-                    console.log( 'ERROR: Invalid value in "-c" argument. HTML color waiting (#000000 - #FFFFFF).' );
-                    process.exit( 1 );
-                }
-                c = value;
-                break;
+	console.log( 'IMG2CHAR v1.0-1 by Baptiste Bideaux.' );
+	console.log( '------------------------------------' );
+	console.log( ' ' );
+	
+	myArgs = process.argv.slice(2);
+	if( myArgs.length > 1 )
+	{
 
-            case '-s':
-                if( isNaN( value ) || value < 0 )
-                {
-                    console.log( 'ERROR: Invalid value in "-s" argument. Positive integer waiting.' );
-                    process.exit( 1 );
-                }
-                s = parseInt( value );
-                break; 
+		imgFile = myArgs[ 0 ];
+	
+		for( var a = 1; a < myArgs.length; a++ )
+		{
+			var arg = myArgs[ a ];
+			if( arg.indexOf( '-' ) != 0 )
+			{
+				console.log( 'ERROR: Invalid argument in ' + arg );
+				process.exit( 1 );
+			}
 
-            case '-ns':
-                if( isNaN( value ) || value < 0 )
-                {
-                    console.log( 'ERROR: Invalid value in "-ns" argument. Positive integer waiting.' );
-                    process.exit( 1 );
-                }
-                ns = parseInt( value );
-                break; 
+			if( arg.indexOf( '=' ) < 2 )
+			{
+				console.log( 'ERROR: Invalid argument in ' + arg );
+				process.exit( 1 );
+			}
+			var command = arg.split( '=' )[ 0 ];
+			var value = arg.split( '=' )[ 1 ];
+			if( value && command != '-o' )
+			{
+				value = value.toLowerCase();
+			}
+			switch( command.toLowerCase() )
+			{
+				case '-n':
+					n = parseInt( value );
+					break;
 
-            case '-m':
-                switch( value.toLowerCase() )
-                {
-                    case 'cpc':
-                    case 'atarist':
-                    case 'thomson':
-                    case 'vg5000':
-                    case 'c64':
-                        m = value.toLowerCase();
-                        break;
-                        
-                    default:
-                        console.log( 'ERROR: Invalid value in "-m" argument. "CPC", "VG5000", "THOMSON" or "C64" waiting.' );
-                        process.exit( 1 );
-                        break;
-                }
-                break;
+				case '-c':
+					c = value;
+					break;
 
-            case '-o':
-                if( !FS.existsSync( value ) )
-                {
-                    console.log( 'ERROR: Invalid value in "-o" argument. ' + value + ' path not exists.' );
-                    process.exit( 1 );
-                }
-                o = value;
-                break;                                       
-        }
-    }
+				case '-s':
+					s = parseInt( value );
+					break; 
+
+				case '-ns':
+					ns = parseInt( value );
+					break; 
+				
+				case '-cl':
+					cl = parseInt( value );
+					break; 
+					
+				case '-eteg':
+					eteg = parseInt( value );
+					break; 					
+					
+				case '-m':
+					switch( value.toLowerCase() )
+					{
+						case 'cpc':
+						case 'atarist':
+						case 'thomson':
+						case 'vg5000':
+						case 'c64':
+							m = value.toLowerCase();
+							break;
+					}
+					break;
+
+				case '-o':
+					o = value;
+					break;                                       
+			}
+		}
+	}
+	convertIMG();
+}
+
+function checkParams()
+{
+	if( !FS.existsSync( imgFile ) )
+	{
+		console.log( 'ERROR: ' + imgFile + ' not found.' );
+		return false;
+	}
+
+	var ext = PATH.extname( imgFile ).toLowerCase();
+	if( ext != '.png' && ext !='.gif' && ext != '.bmp' && ext!= '.jpg' )
+	{
+		console.log( 'ERROR: ' + imgFile + ' format not supported.' );
+		return false;
+	}
+		
+	if( isNaN( n ) )
+	{
+		console.log( 'ERROR: Invalid value in "-n" argument. Integer waiting.' );
+		return false;
+	}
+					
+	if( !FS.existsSync( PATH.dirname( o ) ) )
+	{
+		console.log( 'ERROR: Output path not exists in "-o". ' + o + ' path not exists.' );
+		return false;
+	}
+
+	if( cl != "yes" && cl != "no" )
+	{
+		console.log( 'ERROR: Invalid value in "-cl" argument. "no" or "yes" waiting.' );
+		return false;
+	}
+
+	if( eteg != "et" && eteg != "eg" )
+	{
+		console.log( 'ERROR: Invalid value in "-eteg" argument. "et" or "eg" waiting.' );
+		return false;
+	}
+	
+	if( c.indexOf( '#' ) != 0 || c.length < 7 )
+	{
+		console.log( 'ERROR: Invalid value in "-c" argument. HTML color waiting (#000000 - #FFFFFF).' );
+		return false;
+	}	
+	
+	if( isNaN( s ) || s < 0 )
+	{
+		console.log( 'ERROR: Invalid value in "-s" argument. Positive integer waiting.' );
+		return false;
+	}
+	
+	if( isNaN( ns ) || ns< 0 )
+	{
+		console.log( 'ERROR: Invalid value in "-ns" argument. Positive integer waiting.' );
+		return false;
+	}	
+	
+	if( m != 'cpc' && m != 'atarist' && m != 'thomson' && m != 'c64' && m != 'vg5000' )
+	{	
+		console.log( 'ERROR: Invalid value in "-m" argument. "CPC", "VG5000", "THOMSON" or "C64" waiting.' );
+		return false;
+	}
+	return true;
 }
 
 var captureSettings = 
@@ -118,10 +186,10 @@ var captureSettings =
         height: 8,
         headerBASIC: 
         [
-            'SYMBOL AFTER SSTART',
+            'SYMBOL AFTER %NS-',
             'FOR I=O TO ' + ( n - 1),
             'READ A$,B$,C$,D$,E$,F$,G$,H$',
-            'SYMBOL ' + ns + '+I,VAL("&"+A$),VAL("&"+B$),VAL("&"+C$),VAL("&"+D$),VAL("&"+E$),VAL("&"+F$),VAL("&"+G$),VAL("&"+H$)',
+            'SYMBOL %NS+I,VAL("&"+A$),VAL("&"+B$),VAL("&"+C$),VAL("&"+D$),VAL("&"+E$),VAL("&"+F$),VAL("&"+G$),VAL("&"+H$)',
             'NEXT I'
         ],
         dataBASIC: 'DATA %1,%2,%3,%4,%5,%6,%7,%8',
@@ -143,10 +211,10 @@ var captureSettings =
         height: 8,
         headerBASIC: 
         [
-            'CLEAR ,,' + n,
-            'FOR I=0 TO ' + ( n - 1 ),
+            'CLEAR ,,%NS',
+            'FOR I=0 TO %NS-1',
             'READ A$,B$,C$,D$,E$,F$,G$,H$',
-            'DEFGR$(' + ns + '+I)=VAL("&H"+A$),VAL("&H"+B$),VAL("&H"+C$),VAL("&H"+D$),VAL("&H"+E$),VAL("&H"+F$),VAL("&H"+G$),VAL("&H"+H$)',
+            'DEFGR$(%NS-I)=VAL("&H"+A$),VAL("&H"+B$),VAL("&H"+C$),VAL("&H"+D$),VAL("&H"+E$),VAL("&H"+F$),VAL("&H"+G$),VAL("&H"+H$)',
             'NEXT I'
         ],
         dataBASIC: 'DATA %1,%2,%3,%4,%5,%6,%7,%8',
@@ -166,58 +234,47 @@ var captureSettings =
     {
         width: 8,
         height: 10,
-        headerBASIC: 
-        [
-            'INIT 1,0',
-        ],
-        dataBASIC: 'SETET %NS,"%1%2%3%4%5%6%7%8%9%A"',
-        endBASIC: ''
+        headerBASIC: undefined,
+        dataBASIC: 'SET%ETEG %NS,"%1%2%3%4%5%6%7%8%9%A"',
+        endBASIC: undefined
     }        
 }
 
-loadImage( imgFile ).then( ( image ) =>
+function convertIMG( cb )
 {
-    imgSource = image;
-    canvas = createCanvas( image.width, image.height );
-    ctx = canvas.getContext( '2d' );
-    ctx.drawImage( image, 0, 0 );
+	if( !checkParams() )
+	{
+		if( cb )cb(false);
+		return;
+	}
 
-    captureProcess();
-    process.exit( 0 );
-} );
+	// WARNING: Canvas package for Node has been modified to callback
+	loadImage( imgFile, function( image ) 
+	{
+		imgSource = image;
+		canvas = createCanvas( image.width, image.height );
+		ctx = canvas.getContext( '2d' );
+		ctx.drawImage( image, 0, 0 );
+		captureProcess( cb );		
+	} );
+	
+}
 
 function showHelp()
 {
     console.log( 'Syntax in command line:' );
-    console.log( 'img2char.js <imagefile> [-n=<number>] [-c=<color>] [-s=<spacing>] [-m=<machine> ] [-o=<output>]' );
+    console.log( 'img2char.js <imagefile> [-n=<number>] [ns=<number>] [-c=<color>] [-cl=<no|yes>] [-s=<number>] [-m=<cpc|thomson|atarist|c64|vg5000> ] [-o=<output path>]' );
     console.log( ' imagefile: Absolute path of the image file.' );
     console.log( ' -n: The number of characters to capture ( 127 by default ).' );
-    console.log( ' -ns: The index of start of first user character ( 32 by default ).' );    
-    console.log( ' -c: The color to capture ( #FFFFFF by default ).' );
+    console.log( ' -ns: The index of the first user character ( 32 by default ).' );    
+    console.log( ' -c: The HTML color to capture ( #FFFFFF by default ).' );
+    console.log( ' -cl: Removes the characters definition in double. Must be "no" or "yes" ( "no" by default ).' );
     console.log( ' -s: Spacing between each character. (0 by default)' );
     console.log( ' -m: Target machine. Must be CPC, VG5000, THOMSON or C64. (CPC by default)' );
     console.log( ' -o: Output path for the generated BASIC file. (directory of the imagefile by default)' );
 }
 
-function checkImage()
-{
-    var img = myArgs[ 0 ];
-    if( !FS.existsSync( img ) )
-    {
-        console.log( 'ERROR: ' + img + ' not found.' );
-        process.exit( 1 );
-    }
-
-    var ext = PATH.extname( img ).toLowerCase();
-    if( ext != '.png' && ext !='.gif' && ext != '.bmp' && ext!= '.jpg' )
-    {
-        console.log( 'ERROR: ' + img + ' format not supported.' );
-        process.exit( 1 );
-    }
-    return img;
-}
-
-function captureProcess()
+function captureProcess( cb )
 {
     console.log( 'Convert Image to Characters...' );
     var sx = 0;
@@ -227,6 +284,8 @@ function captureProcess()
     var chars = [];
     var char = [];
     var line = '';
+	
+	var memChar = [];
 
     while( chars.length < n )
     {    
@@ -260,8 +319,10 @@ function captureProcess()
                     sy = sy + captureSettings[ m ].height + s;
                     if( sy > imgSource.height )
                     {
-                        console.log( 'ERROR: The capture procedure has gone out of bounds image.' );
-                        process.exit( 1 );                        
+                        //console.log( 'ERROR: The capture procedure has gone out of bounds image.' );
+                        //process.exit( 1 );                        
+						n = chars.length;
+						//if( cb ) cb( true );
                     }
                 } 
             }
@@ -270,11 +331,14 @@ function captureProcess()
 
     var code = '';
     console.log( "Generating of the BASIC code..." );
-    if ( chars && chars.length > 0 && captureSettings[ m ].headerBASIC )
+    if ( chars && chars.length > 0 )
     {
-        code = captureSettings[ m ].headerBASIC.join( "\r\n" );
+		if( captureSettings[ m ].headerBASIC )
+		{
+			code = captureSettings[ m ].headerBASIC.join( "\r\n" );
+		}
+		
         var nd = [ '%1', '%2', '%3','%4','%5','%6','%7','%8','%9','%A' ];
-        var nl = 100;
         for( var ch = 0; ch < chars.length; ch++ )
         {
             var char = chars[ ch ];
@@ -290,14 +354,43 @@ function captureProcess()
                 }
                 lineData = lineData.strReplace( nd[ l ], hx );
             }
-            code = code + "\r\n" + lineData.strReplace( "%NS", "0" + ns );
-            nl = nl + 10;
-            ns++;
+			
+			if( memChar.indexOf( lineData ) > -1 && cl == "yes" )
+			{
+				lineData = '';
+			}
+			else
+			{
+				memChar.push( lineData );
+			}
+			
+			if( lineData != '' )
+			{
+				if( code != '' )
+				{
+					code = code + "\r\n";
+				}
+				lineData = lineData.strReplace( "%NS", ns );
+				
+				if( m == 'vg5000' )
+				{
+					lineData = lineData.strReplace( "%ETEG", eteg.toUpperCase() );
+				}
+				
+				code = code + lineData;
+				ns++;
+			}
         }
     }
 
-    FS.writeFileSync( o + '/code.BAS', code, 'utf8' );
-    console.log( 'Code BASIC created in ' + ( o + '/code.BAS' ) );
+	if( captureSettings[ m ].endBASIC )
+	{
+		code = code + captureSettings[ m ].endBASIC.join( "\r\n" );
+	}
+	
+    FS.writeFileSync( o, code + "\r\n", 'utf8' );
+    console.log( 'Code BASIC created in ' + o );
+	if( cb ) cb( false );
 }
 
 function rgbToHex(r, g, b){

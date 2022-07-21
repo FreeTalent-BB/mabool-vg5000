@@ -1,20 +1,8 @@
 const PATH = require( 'path' );
 const FS = require( 'fs' );
 
-const myArgs = process.argv.slice(2);
-
-console.log( 'RSCRIPT v1.0-1 by Baptiste Bideaux' );
-console.log( '----------------------------------' ); 
-console.log( '' );
-
-if( myArgs.length == 0 )
-{
-    showHelp();
-    process.exit( 0 );
-}
-
 var fileSource = undefined;
-var o = undefined;
+var o = "./code.bas";
 var nl = 1;
 var vars = [];
 var labels = [];
@@ -45,8 +33,35 @@ String.prototype.strReplace = function( strSearch, strReplace )
 	return newStr;
 }
 
-if( myArgs.length > 0 )
+function rscript( options )
 {
+	fileSource = options.source;
+	if( fileSource == undefined )
+	{
+		return false;
+	}
+	
+	compress = (options.c && options.c=="yes")?true:false;
+	o = (options.o)?options.o:"./output.bas";
+	
+	if( !transpileFile( fileSource ) )
+	{
+		return false;
+	}
+	
+	return finalizeCode();
+}
+exports.rscript = rscript;
+
+var myArgs = [];
+if( PATH.basename( process.argv[ 1 ] ).toLowerCase() == 'rscript.js' )
+{
+	console.log( 'RSCRIPT v1.0-2 by Baptiste Bideaux' );
+	console.log( '----------------------------------' ); 
+	console.log( '' );
+
+	myArgs = process.argv.slice(2);
+	
     fileSource = myArgs[ 0 ];
     if( !FS.existsSync( fileSource ) )
     {
@@ -54,7 +69,6 @@ if( myArgs.length > 0 )
         process.exit( 1 );
     }
 
-    o = PATH.dirname( fileSource );
     for( var a = 1; a < myArgs.length; a++ )
     {
         var arg = myArgs[ a ];
@@ -69,89 +83,190 @@ if( myArgs.length > 0 )
             console.log( 'ERROR: Invalid argument in ' + arg );
             process.exit( 1 );
         }
+		
         var command = arg.split( '=' )[ 0 ];
         var value = arg.split( '=' )[ 1 ];
+		if( value && command != '-o' )
+		{
+			value = value.toLowerCase();
+		}		
         switch( command.toLowerCase() )
         {
             case '-o':
-                if( !FS.existsSync( value ) )
-                {
-                    console.log( 'ERROR: Invalid value in "-o" argument. ' + value + ' path not exists.' );
-                    process.exit( 1 );
-                }
                 o = value;
                 break;
 				
             case '-c':
-                if( value.toLowerCase() == 'yes' )
+                if( value == 'yes' )
                 {
 					compress = true;
                 }
-                break;				
+                break;
+				
+            case '-h':
+				showHelp();
+				process.exit( 0 );
+                break;
         }
+		
+		if( !transpileFile( fileSource ) )
+		{
+			return false;
+		}
+		return finalizeCode();
     }
 }
 
-transpileFile( fileSource );
-code = '';
-if( lines.length > 0 )
+function checkParams()
 {
-    code = lines.join( "\r\n" ) + "\r\n";
+	if( !FS.existsSync( PATH.dirname( o ) ) )
+    {
+		console.log( 'ERROR: Invalid value in "-o" argument. ' + PATH.dirname( o ) + ' path not exists.' );
+        return false;
+    }
+	return true;
 }
 
-for( var l = 0; l < vars.length; l++ )
+function finalizeCode()
 {
-    code = code.strReplace( '!' + vars[ l ], varNames[ vars[ l ] ].toUpperCase() );
-    code = code.strReplace( '!' + vars[ l ].toUpperCase(), varNames[ vars[ l ] ].toUpperCase() );	
-    code = code.strReplace( '!' + vars[ l ].toLowerCase(), varNames[ vars[ l ] ].toUpperCase() );
-}
-
-for( var l = 0; l < labels.length; l++ )
-{
-    var label = labels[ l ];
-    code = code.strReplace( '@' + label.name, label.line );
-}
-
-code = code.strReplace( '_', " " );
-
-// Patch VG5000 Code
-code = code.strReplace( 'SETEG0', "SETEG" );
-code = code.strReplace( 'seteg0', "seteg" );
-code = code.strReplace( 'SETET0', "SETET" );
-code = code.strReplace( 'setet0', "setet" );
-code = code.strReplace( "PRINT", '?' );
-code = code.strReplace( "print", '?' );
-code = code.strReplace( "Print", '?' );
- 
-
-// Verifie le code
-var lines = code.split( "\r\n" )
-if( lines )
-{
-	for( var l = 0; l < lines.length; l++ )
+	code = generateCode();
+	if( code === false )
 	{
-		if( ( lines[ l ].length - lines[ l ].indexOf( " " ) )  > 127 )
+		return false;
+	}
+	
+	// Verifie le code
+	var lines = code.split( "\r\n" )
+	if( lines )
+	{
+		for( var l = 0; l < lines.length; l++ )
 		{
-			console.log( 'WARN: Line too long at line ' + ( l + 1 ) + ' (' + ( lines[ l ].length - lines[ l ].indexOf( " " ) ) + ' characters)' );
+			if( ( lines[ l ].length - lines[ l ].indexOf( " " ) )  > 255 )
+			{
+				console.log( 'WARN: Line too long at line ' + ( l + 1 ) + ' (' + ( lines[ l ].length - lines[ l ].indexOf( " " ) ) + ' characters)' );
+			}
 		}
 	}
+	FS.writeFileSync( o, code, 'utf8' );
+	console.log( 'Code BASIC created in ' +  o );
+	return true;
 }
-FS.writeFileSync( o + '/CODE.BAS', code, 'utf8' );
 
-console.log( 'Code BASIC created in ' + ( o + '/code.BAS' ) );
-
-function transpileFile( file )
+function generateCode()
 {
+	var code = "";
+	var finalLine = '';
+	var added = false;
+	var nl = 1;
+	for( var l = 0; l < lines.length; l++ )
+	{	
+		var line = lines[ l ];
+
+		if( line.substring( 0, 7 ).toLowerCase() == "#label " )
+		{
+			var part = line.split( " " );
+			if( part.length < 2 )
+			{
+				console.log( 'ERROR: Label name undefined at line ' + ( l + 1 ) + ' in ' + file );
+				return false;                    
+			}
+
+			var labelInfo = 
+			{ 
+				name: part[ 1 ],
+				line: nl
+			}
+
+			if( labelNames[ labelInfo.name ] )
+			{
+				console.log( 'ERROR: Label name already exists at line ' + ( l + 1 ) + ' in ' + file );
+				return false;                      
+			}
+			labels.push( labelInfo );
+			labelNames[ labelInfo.name ] = true;
+			line = '';
+		}
+		
+		if( line != '' )
+		{
+			for( var v = 0; v < vars.length; v++ )
+			{
+				line = line.strReplace( '!' + vars[ v ], varNames[ vars[ v ] ].toUpperCase() );
+				line = line.strReplace( '!' + vars[ v ].toUpperCase(), varNames[ vars[ v ] ].toUpperCase() );	
+				line = line.strReplace( '!' + vars[ v ].toLowerCase(), varNames[ vars[ v ] ].toUpperCase() );
+			}
+
+			if( compress )
+			{
+				line = line.strReplace( " ", "" );
+				line = line.strReplace( "_", " " );
+				line = line.strReplace( "PRINT", '?' );
+				line = line.strReplace( "print", '?' );
+				line = line.strReplace( "Print", '?' );
+			}
+
+			if( line.substring( line.length - 1, line.length ) == '/' )
+			{
+
+				if( finalLine != '' )
+				{
+					finalLine = finalLine + ':' + line.substring( 0, line.length - 1 );
+					
+				}
+				else
+				{
+					finalLine = line.substring( 0, line.length - 1 );
+				}
+				added = false;
+			}
+			else
+			{
+				if( finalLine == '' )
+				{
+					finalLine = line;
+				}
+				else
+				{
+					finalLine = finalLine + ':' + line;						
+				}
+				added = true;
+			}
+		}
+		
+		if( finalLine != '' && added )
+		{
+			code = code + nl + " " + finalLine + "\r\n";
+			finalLine = "";
+			nl = nl + 1;
+			added = false;
+		}		
+	}
+	
+	for( var l = 0; l < labels.length; l++ )
+	{
+		var label = labels[ l ];
+		code = code.strReplace( '@' + label.name, label.line );
+	}
+	
+	return code;
+}
+
+
+function transpileFile( file, cb )
+{
+	if( !checkParams() )
+	{
+		return false;		
+	}
+	
     if( !FS.existsSync( file ) )
     {
         console.log( 'ERROR: ' + file + ' not found.' );
-        process.exit( 1 );        
+        return false;;        
     }
 
     var data = FS.readFileSync( file, 'utf8' ).toString();
     var dataLines = data.split( "\r" );
-	var finalLine = '';
-	var addLine = false;
 	
     if( dataLines )
     {
@@ -182,27 +297,69 @@ function transpileFile( file )
                 if( part.length < 2 )
                 {
                     console.log( 'ERROR: File not found at line ' + ( l + 1 ) + ' in ' + file );
-                    process.exit( 1 );                    
+                    return false;                 
                 }
 
                 var incFile = PATH.dirname( file ) + "/" + part[ 1 ].strReplace( ".", "/" ) + ".rscript";
-                transpileFile( incFile );
+                if( !transpileFile( incFile ) )
+				{
+					return false;
+				}
                 line = '';
             }
 
+            if( line.substring( 0, 9 ).toLowerCase() == "#tmx2bas " )
+            {
+                var part = line.split( " " );
+                if( part.length < 2 )
+                {
+                    console.log( 'ERROR: #tmx2bas argument error at line ' + ( l + 1 ) + ' in ' + file );
+                    return false;                    
+                }
+				var options = JSON.parse( '{' + part[ 1 ] + '}' );
+				var { tmx2bas } = require( './tmx2bas.js' );
+				if( !tmx2bas( options ) )
+				{
+					console.log( 'ERROR: TMX2BAS failed!' );
+					return false;
+				}
+				line = "";
+			}
+			
+            if( line.substring( 0, 10 ).toLowerCase() == "#img2char " )
+            {
+                var part = line.split( " " );
+                if( part.length < 2 )
+                {
+                    console.log( 'ERROR: #imf2char argument error at line ' + ( l + 1 ) + ' in ' + file );
+                    return false;                    
+                }
+				var options = JSON.parse( '{' + part[ 1 ] + '}' );
+				var { img2char } = require( './img2char.js' );
+				img2char( options, function( error )
+				{
+					if( error )
+					{
+						console.log( 'ERROR: IMG2CHAR failed!' );
+						process.exit( 1 );
+					}
+				} );
+				line = "";
+			}
+			
             if( line.substring( 0, 5 ).toLowerCase() == "#var " )
             {
                 var part = line.split( " " );
                 if( part.length < 2 )
                 {
                     console.log( 'ERROR: Variable name undefined at line ' + ( l + 1 ) + ' in ' + file );
-                    process.exit( 1 );                    
+                    return false;                    
                 }
 
                 if( varNames[ part[ 1 ] ] )
                 {
                     console.log( 'ERROR: Variable name already exists at line ' + ( l + 1 ) + ' in ' + file );
-                    process.exit( 1 );                      
+                    return false;                      
                 }
 				
 				var letters = "abcdefghijklmnopqrstuvwxyz";
@@ -217,82 +374,22 @@ function transpileFile( file )
 				line='';
 			}
 
-            if( line.substring( 0, 7 ).toLowerCase() == "#label " )
-            {
-                var part = line.split( " " );
-                if( part.length < 2 )
-                {
-                    console.log( 'ERROR: Label name undefined at line ' + ( l + 1 ) + ' in ' + file );
-                    process.exit( 1 );                    
-                }
-
-                var labelInfo = 
-                { 
-                    name: part[ 1 ],
-                    line: nl
-                }
-
-                if( labelNames[ labelInfo.name ] )
-                {
-                    console.log( 'ERROR: Label name already exists at line ' + ( l + 1 ) + ' in ' + file );
-                    process.exit( 1 );                      
-                }
-                labels.push( labelInfo );
-                labelNames[ labelInfo.name ] = true;
-                line = '';
-            }
-
 			if( line != '' )
 			{
-				if( line.substring( line.length - 1, line.length ) == '/' )
-				{
-					if( finalLine != '' )
-					{
-						finalLine = finalLine + ' : ' + line.substring( 0, line.length - 1 );
-						
-					}
-					else
-					{
-						finalLine = line.substring( 0, line.length - 1 );
-					}
-				}
-				else
-				{
-					if( finalLine == '' )
-					{
-						finalLine = line;
-					}
-					else
-					{
-						finalLine = finalLine + ' : ' + line;						
-					}
-					addLine = true;
-				}
-			}
-
-            if( finalLine != '' && addLine )
-            {
-				if( compress )
-				{
-					finalLine = finalLine.strReplace( " ", "" );
-				}
-                
-				finalLine = nl + ' ' + finalLine;
-                lines.push( finalLine );
-                nl = nl + 1;
-				finalLine = '';
-				addLine = false;
+                lines.push( line );
             }
 
         }
     }
+	return true;
 }
 
 function showHelp()
 {
     console.log( 'Syntax in command line:' );
-    console.log( 'rscript.js <filesource> [-o=<output>]' );
+    console.log( 'rscript.js <filesource> [-h] [-o=<output>] [-c=<no|yes>]' );
     console.log( '<filesource>: Absolute path of the main source file.' );
-    console.log( '-c: Code compression. Remove all unnecessary spaces and the all comments.' );
+    console.log( '-h: This help' );
+    console.log( '-c: Code compression. Remove all unnecessary spaces, empty lines and the all comments. Must be "no" or "yes" ("no" by default)' );
     console.log( '-o: Output path for the generated BASIC file. (directory of the sourcefile by default)' );
 }
