@@ -147,6 +147,7 @@ function finalizeCode()
 			}
 		}
 	}
+
 	FS.writeFileSync( o, code, 'utf8' );
 	console.log( 'Code BASIC created in ' +  o );
 	return true;
@@ -195,23 +196,13 @@ function generateCode()
 				line = line.strReplace( '!' + vars[ v ].toUpperCase(), varNames[ vars[ v ] ].toUpperCase() );	
 				line = line.strReplace( '!' + vars[ v ].toLowerCase(), varNames[ vars[ v ] ].toUpperCase() );
 			}
-
-			if( compress )
-			{
-				line = line.strReplace( " ", "" );
-				line = line.strReplace( "_", " " );
-				line = line.strReplace( "PRINT", '?' );
-				line = line.strReplace( "print", '?' );
-				line = line.strReplace( "Print", '?' );
-			}
-
+			
 			if( line.substring( line.length - 1, line.length ) == '/' )
 			{
 
 				if( finalLine != '' )
 				{
 					finalLine = finalLine + ':' + line.substring( 0, line.length - 1 );
-					
 				}
 				else
 				{
@@ -247,7 +238,16 @@ function generateCode()
 		var label = labels[ l ];
 		code = code.strReplace( '@' + label.name, label.line );
 	}
-	
+
+	if( compress )
+	{
+		console.log( 'ici' );
+		code = code.strReplace( " ", "" );
+		code = code.strReplace( "_", " " );
+		code = code.strReplace( "PRINT", '?' );
+		code = code.strReplace( "print", '?' );
+		code = code.strReplace( "Print", '?' );
+	}	
 	return code;
 }
 

@@ -1,2 +1,3 @@
 node "utils/rscript.js" game.rscript -c=yes
-pause
+cd ../../
+dcvg5k_20220226.exe

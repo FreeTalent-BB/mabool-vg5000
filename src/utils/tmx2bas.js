@@ -288,7 +288,6 @@ function convertTMX()
 			var code = "";
 			var opened = false;
 			var m = 0;
-			w = -1;
 			datas = [];
 			for( var l = 0; l < lines.length; l++ )
 			{
@@ -310,7 +309,6 @@ function convertTMX()
 				{
 					line = '';
 					opened = false;
-					w = -1;
 					ln = 0;
 
 					code = code + convertData( datas ) + '\r\n';
@@ -339,13 +337,11 @@ function convertTMX()
 		}
 		FS.writeFileSync( outputPath, code, 'utf8' );
 		console.log( 'TMX Code BASIC created in ' + outputPath );
-		//process.exit( 0 );
 		return true;
 	}
 	catch( e )
 	{
 		console.log( e );
-		//process.exit( 1 );
 		return false;
 	}
 }
@@ -402,7 +398,17 @@ function generateDEC( datas )
 	{
 		if( n == maxData )
 		{
-			res = res + "DATA " + line + "\r\n";
+			res = res + "DATA " + line;
+			if( sep < 3 )
+			{
+				res = res + "/";
+			}
+			res = res + "\r\n";
+			sep++;
+			if( sep > 3 )
+			{
+				sep = 0;
+			}			
 			line = "";
 			n = 0;
 		}
@@ -433,7 +439,17 @@ function generateHEX( datas )
 	{
 		if( n == maxData )
 		{
-			res = res + "DATA " + line + "\r\n";
+			res = res + "DATA " + line;
+			if( sep < 3 )
+			{
+				res = res + "/";
+			}
+			res = res + "\r\n";
+			sep++;
+			if( sep > 3 )
+			{
+				sep = 0;
+			}			
 			line = "";
 			n = 0;
 		}
@@ -466,43 +482,61 @@ function generateHEX( datas )
 function generateSTR( datas )
 {
 	
-	var charMap = 
-	[
-		"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","g","h","i",
-		"j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B",
-		"C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U",
-		"V","W","X","Y","Z","?","!",":",";",",",".","&","#","{","}","(",")","[","]",
-		"=","+","-","*","/","@","%","$","£",">","é","è","à","ç","ù","ô","î","ê","û",
-		"â","ö","ë","ä","ï","ü","µ"
-	];
-	
 	var res = "";
 	var line = "";
 	var n = 0;
+	var sep = 0;
 	for( var d = 0; d < datas.length; d++ )
 	{
 		if( n == maxData )
 		{
-			res = res + 'DATA "' + line + '"\r\n';
+			res = res + 'DATA "' + line + '"';
+			if( sep < 3 )
+			{
+				res = res + "/";
+			}
+			res = res + "\r\n";
+			sep++;
+			if( sep > 3 )
+			{
+				sep = 0;
+			}			
 			line = "";
 			n = 0;
 		}
 		
 		if( datas[ d ] != -1 )
 		{
-			if( datas[ d ] > 110 )
+			var dt = datas[ d ];
+			if( dt > 90 )
 			{
-				console.log( "ERROR: Data value higher at 110 found by STR generator." );
+				console.log( "ERROR: Data value higher at 90 found by STR generator." );
 				process.exit( 1 );
 			}
-			line = line + charMap[ datas[ d ] ];
+			
+			if( dt == 2 )
+			{
+				dt = 91;
+			}
+			
+			line = line + String.fromCharCode( dt + 32 );
 			n++;
 		}
 	}
 
 	if( line != "" )
 	{
-		res = res + 'DATA "' + line + '"\r\n';
+		res = res + 'DATA "' + line + '"';
+		if( sep < 3 )
+		{
+			res = res + "/";
+		}
+		res = res + "\r\n";
+		sep++;
+		if( sep > 3 )
+		{
+			sep = 0;
+		}		
 	}
 	
 	return res;

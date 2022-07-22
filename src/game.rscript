@@ -1,4 +1,10 @@
 #tmx2bas "source":"./map/map.tmx","c":"rle","f":"str","rl":"yes","max":16,"o":"./inc/MAPDATA.rscript"
+#img2char "source":"./graphics/font.png","m":"vg5000","cl":"yes","eteg":"et","o":"./inc/FONT.rscript"
+#img2char "source":"./graphics/sprites.png","m":"vg5000","cl":"yes","eteg":"eg","o":"./inc/SPRITES.rscript"
+
+#INCLUDE inc.FONT
+#INCLUDE inc.SPRITES
+
 #INCLUDE inc.VARS
 
 Goto @main_start
@@ -9,9 +15,6 @@ Goto @main_start
 #INCLUDE inc.MAPDATA
 
 #label main_start
-	Gosub @load_level
-	Gosub @show_level
+	Gosub @load_level/
+	Gosub @show_level/
 	Goto @play_game
-	
-	End
-

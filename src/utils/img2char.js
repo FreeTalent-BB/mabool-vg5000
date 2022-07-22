@@ -319,10 +319,7 @@ function captureProcess( cb )
                     sy = sy + captureSettings[ m ].height + s;
                     if( sy > imgSource.height )
                     {
-                        //console.log( 'ERROR: The capture procedure has gone out of bounds image.' );
-                        //process.exit( 1 );                        
 						n = chars.length;
-						//if( cb ) cb( true );
                     }
                 } 
             }
@@ -331,6 +328,7 @@ function captureProcess( cb )
 
     var code = '';
     console.log( "Generating of the BASIC code..." );
+	var sep = 0;
     if ( chars && chars.length > 0 )
     {
 		if( captureSettings[ m ].headerBASIC )
@@ -366,10 +364,6 @@ function captureProcess( cb )
 			
 			if( lineData != '' )
 			{
-				if( code != '' )
-				{
-					code = code + "\r\n";
-				}
 				lineData = lineData.strReplace( "%NS", ns );
 				
 				if( m == 'vg5000' )
@@ -378,6 +372,17 @@ function captureProcess( cb )
 				}
 				
 				code = code + lineData;
+				if( sep < 2 )
+				{
+					code = code + "/";
+				}
+				sep++;
+				if( sep > 2 )
+				{
+					sep = 0;
+				}
+				
+				code = code + "\r\n";
 				ns++;
 			}
         }

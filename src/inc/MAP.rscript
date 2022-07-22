@@ -8,34 +8,31 @@
 	if !LEVEL = 4 Then Restore @map4
 
 	Init 2,0/
-	Read !MAP_WIDTH/
-	!MAP_HEIGHT = 1
-
+	P = !ADR_LEVEL
 #label read_data1
-	Read T1$ : C = 1 : T = 1 /
-	If T1$ = "*" Then Goto @stop_read
+	If P > !ADR_LEVEL + 240 Then Goto @stop_read
+	Read T1$ : T = 1
 	
-#label read_data2	
-	T2$ = "&" + Chr$(34)+Mid$( T1$, T, 2 )+Chr$(34)/
-	Poke !ADR_LEVEL + ( ( C - 1 ) + ( ( !MAP_HEIGHT - 1 ) * 20 ) ), Val( T2$ )/
-	C = C + 1 : T =T + 2
-	If T < !MAP_WIDTH*2 Goto @read_data2
+#label read_data2
+	N = ASC( Mid$( T1$, T, 1 ) ) - 32/
+	V = ASC( Mid$( T1$, T+1, 1 ) ) - 32
+	For E = 1 To E = N/
+		Poke P, V/
+		P = P + 1/
+	Next E
+	T = T + 2/
+	If T < Len( T1$ ) Goto @read_data2
 
-	!MAP_HEIGHT = !MAP_HEIGHT + 1
 	Goto @read_data1
 
 #label stop_read
-	T1$="":T2$=""/
-	!DECAL_X = ( 40 - ( !MAP_WIDTH * 2 ) ) / 2/
-	!DECAL_Y = ( 24 - ( !MAP_HEIGHT * 2 ) ) / 2/
-	Return
+	T1$ = "" : T2$ = "" : Return
 
 ;
 ; Show the current level
 ;
 #label show_level
-	MX = 0 : MY = 0 : PC = 0 : !NETOIL = 0 : !NCLE = 0
-	L = 1
+	MX = 0 : MY = 0 : PC = 0 : !NETOIL = 0 : !NCLE = 0 : L = 1
 
 #label draw_line1
 	C = 1
@@ -43,7 +40,7 @@
 #label draw_line2
 
 	MV = Peek( !ADR_LEVEL + ( ( C - 1 ) + ( ( L - 1 ) * 20 ) ) )/
-	Eg !LVLCOL,0,0 : CursorX !DECAL_X + MX : CursorY !DECAL_Y + MY
+	Eg !LVLCOL,0,0 : CursorX MX : CursorY MY
 	
 	
 	; Mur
@@ -88,16 +85,16 @@
 	MX = MX + 2 : PC = PC + 1/
 
 	Et 7,0,0 : CursorX 10 : CursorY 24/
-	T1$ = "LOADING_STAGE..." + Str$( Int( ( 100 / ( !MAP_WIDTH * !MAP_HEIGHT ) ) * PC ) ) + "_%"/
+	T1$ = "LOADING_STAGE..." + Str$( Int( ( 100 / 240 ) * PC ) ) + "_%"/
 	Print T1$;
 
-	C = C + 1
-	If C < !MAP_WIDTH Then Goto @draw_line2
+	C = C + 1/
+	If C < 20 Then Goto @draw_line2
 
 	MY = MY + 2 : MX = 0/
 	L = L + 1
-	If L < !MAP_HEIGHT Then Goto @draw_line1
+	If L < 12 Then Goto @draw_line1
 	
 	Gosub @update_infos/
-	T1$ = ""
+	T1$ = ""/
 	Return

@@ -16,42 +16,41 @@
 	
 	If Peek( !ADR_PLAYER + 1 ) = 1 Or Peek( !ADR_PLAYER + 1 ) = 6 Then Goto @game_loop
 
-	Eg !LVLCOL,0,0 : CursorX !DECAL_X + !JX : CursorY !DECAL_Y + !JY/
+	Eg !LVLCOL,0,0 : CursorX !JX : CursorY !JY/
 	Gosub @restore_tile
 	
-	!ADR_PLAYER = !ADR_PLAYER + 1 : !JX = !JX + 2 : CursorX !DECAL_X + !JX : CursorY !DECAL_Y + !JY/ 
-	Gosub @update_tile/
+	!ADR_PLAYER = !ADR_PLAYER + 1 : !JX = !JX + 2 : CursorX !JX : CursorY !JY/
+	Gosub @update_tile
 	Goto @move_right
 	
 #label move_left
 	
 	If Peek( !ADR_PLAYER - 1 ) = 1 Or Peek( !ADR_PLAYER - 1 ) = 6 Then Goto @game_loop
-	Eg !LVLCOL,0,0 : CursorX !DECAL_X + !JX : CursorY !DECAL_Y + !JY/
+	Eg !LVLCOL,0,0 : CursorX !JX : CursorY !JY/
 	Gosub @restore_tile
 	
-	!ADR_PLAYER = !ADR_PLAYER - 1 : !JX = !JX - 2 : CursorX !DECAL_X + !JX : CursorY !DECAL_Y + !JY/ 
-	Gosub @update_tile/
+	!ADR_PLAYER = !ADR_PLAYER - 1 : !JX = !JX - 2 : CursorX !JX : CursorY !JY /
+	Gosub @update_tile
 	Goto @move_left
 
 #label move_up
 	
 	If Peek( !ADR_PLAYER - 20 ) = 1 Or Peek( !ADR_PLAYER - 20 ) = 6 Then Goto @game_loop
-
-	Eg !LVLCOL,0,0 : CursorX !DECAL_X + !JX : CursorY !DECAL_Y + !JY/
+	Eg !LVLCOL,0,0 : CursorX !JX : CursorY !JY/
 	Gosub @restore_tile
 	
-	!ADR_PLAYER = !ADR_PLAYER - 20 : !JY = !JY - 2 : CursorX !DECAL_X + !JX : CursorY !DECAL_Y + !JY/
-	Gosub @update_tile/
+	!ADR_PLAYER = !ADR_PLAYER - 20 : !JY = !JY - 2 : CursorX !JX : CursorY !JY/
+	Gosub @update_tile
 	Goto @move_up
 
 #label move_down
 	
 	If Peek( !ADR_PLAYER + 20 ) = 1 Or Peek( !ADR_PLAYER + 20 ) = 6 Then Goto @game_loop
-	Eg !LVLCOL,0,0 : CursorX !DECAL_X + !JX : CursorY !DECAL_Y + !JY/
+	Eg !LVLCOL,0,0 : CursorX !JX : CursorY !JY/
 	Gosub @restore_tile
 	
-	!ADR_PLAYER = !ADR_PLAYER + 20 : !JY = !JY + 2 : CursorX !DECAL_X + !JX : CursorY !DECAL_Y + !JY/
-	Gosub @update_tile/
+	!ADR_PLAYER = !ADR_PLAYER + 20 : !JY = !JY + 2 : CursorX !JX : CursorY !JY/
+	Gosub @update_tile
 	Goto @move_down
 
 #label restore_tile
@@ -65,8 +64,7 @@
 	Return
 	
 #label update_tile
-	Sound 15,1,7
-	MV = Peek( !ADR_PLAYER )
+	Sound 15,1,7 : MV = Peek( !ADR_PLAYER )
 
 	If MV = 0 Then Print Chr$( 49 )+Chr$( 50 )+!BRK$+Chr$( 87 )+Chr$( 88 ) : Goto @perd_vie
 	If MV = 2 Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 )
@@ -82,30 +80,30 @@
 	Return
 
 #label open_door
-	Eg !LVLCOL,0,0 : Poke !ADR_DOOR,7 : CursorX !DECAL_X + ( ( !PX - 1 ) * 2 ) : CursorY !DECAL_Y + ( ( !PY - 1 ) * 2 )
+	Eg !LVLCOL,0,0 : Poke !ADR_DOOR,7 : CursorX ( ( !PX - 1 ) * 2 ) : CursorY ( ( !PY - 1 ) * 2 )/
 	Print Chr$( 43 )+Chr$( 44 )+!BRK$+Chr$( 81 )+Chr$( 82 );/
-	Display 2 : Play "T5O2ABCDEFGGG"/
+	Display 2 : Play "T5O2ABCDEFGGG"
 	!NCLE=-1 : !NETOIL=-1 : Return
 
 #label take_star
-	Play "T10O3A4"/
+	Play "T10O3A4"
 	!SC=!SC+10 : Gosub @update_infos : !NETOIL = !NETOIL - 1/
 	Return
 
 #label take_key
-	Play "T10O3G4"/
+	Play "T10O3G4"
 	!SC=!SC+10 : Gosub @update_infos : !NCLE = !NCLE - 1/
 	Return
 	
 #label update_infos
-	Et 7,0,0 : CursorX 5 : CursorY 24
-	T1$ = Mid$( Str$( !SC ), 2, Len( Str$( !SC ) ) - 1 )/
+	Et 7,0,0 : CursorX 5 : CursorY 24/
+	T1$ = Mid$( Str$( !SC ), 2, Len( Str$( !SC ) ) - 1 )
 	If Len( T1$ ) < 6 Then For R = Len( T1$ ) To 6 : T1$ = "0" + T1$ : Next R
-	Print "SCORE_" + T1$;
-	T1$ = Mid$( Str$( !LEVEL ), 2, Len( Str$( !LEVEL ) ) - 1 )/
+	Print "SCORE_" + T1$;/
+	T1$ = Mid$( Str$( !LEVEL ), 2, Len( Str$( !LEVEL ) ) - 1 )
 	If Len( T1$ ) < 10 Then T1$ = "0" + T1$
-	Print "_STAGE_" + T1$;
-	T1$ = Mid$( Str$( !LV ), 2, Len( Str$( !LV ) ) - 1 )/
+	Print "_STAGE_" + T1$;/
+	T1$ = Mid$( Str$( !LV ), 2, Len( Str$( !LV ) ) - 1 )
 	If Len( T1$ ) < 10 Then T1$ = "0" + T1$ 
 	Print "_LIVES_" + T1$;/
 	T1$=""/
@@ -113,7 +111,7 @@
 
 #label perd_vie
 	Tx 7,0,0 : CursorX 0 : CursorY 24 : Print SPC(39);/
-	Et 1,0,0 : CursorX 13 : CursorY 24 : Print "HAAAAAaaaaa...";
+	Et 1,0,0 : CursorX 13 : CursorY 24 : Print "HAAAAAaaaaa...";/
 	Display 2/
 	!LV = !LV - 1 : Play "T10O1GFEDCBAAA"/
 	For R = 1 To 10 : Next R/
@@ -121,9 +119,9 @@
 
 #label fin_niveau
 	Tx 7,0,0 : CursorX 0 : CursorY 24 : Print SPC(39);/
-	Et 2,0,0 : CursorX 15 : CursorY 24 : Print "NICE JOB!";
+	Et 2,0,0 : CursorX 15 : CursorY 24 : Print "NICE JOB!";/
 	Display 2 : !LEVEL = !LEVEL + 1/
-	!LVLCOL=!LVLCOL+1 : If !LVLCOL>7 Then LVLCOL=1
+	!LVLCOL=!LVLCOL+1 : If !LVLCOL>7 Then LVLCOL=1/
 	goto @restart_level
 	
 #label restart_level
