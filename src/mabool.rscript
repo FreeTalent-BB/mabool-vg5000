@@ -4,4 +4,4 @@
 #INCLUDE inc.FONT
 #INCLUDE inc.SPRITES
 
-;CLOAD"game",1
+CLOAD"main",1

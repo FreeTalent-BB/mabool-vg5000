@@ -10,11 +10,12 @@
 #var ncle
 #var nbomb
 #var brk$
-#var adr_level
 #var adr_player
-#var adr_door   
-Clear 240, 32767 : !LVLCOL = 1 : !LEVEL = 1/
-!ADR_PLAYER = 0: !ADR_LEVEL = 20480 : !JX = 0 : !JY = 0/
-!SC = 0 : !LV = 4 : !ADR_DOOR = 0 : !PX = 0 : !PY = 0
+#var adr_door 
+#var map  
+#var teleport
+Clear 1000 : !LVLCOL = 1 : !LEVEL = 4 : Dim !MAP( 160 )/
+!ADR_PLAYER = 0: !JX = 0 : !JY = 0/
+!SC = 0 : !LV = 4 : !ADR_DOOR = 0 : !PX = 0 : !PY = 0 : Dim !TELEPORT( 6 )
 !NETOIL = 0 : !NCLE = 0 : !NBOMB = 0/
-!BRK$ = ""+Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )
+!BRK$ = "" + Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )

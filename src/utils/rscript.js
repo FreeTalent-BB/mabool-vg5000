@@ -134,6 +134,15 @@ function finalizeCode()
 	{
 		return false;
 	}
+
+	if( compress )
+	{
+		code = code.strReplace( " ", "" );
+		code = code.strReplace( "_", " " );
+		code = code.strReplace( "PRINT", '?' );
+		code = code.strReplace( "print", '?' );
+		code = code.strReplace( "Print", '?' );
+	}
 	
 	// Verifie le code
 	var lines = code.split( "\r\n" )
@@ -232,22 +241,11 @@ function generateCode()
 			added = false;
 		}		
 	}
-	
 	for( var l = 0; l < labels.length; l++ )
 	{
 		var label = labels[ l ];
 		code = code.strReplace( '@' + label.name, label.line );
 	}
-
-	if( compress )
-	{
-		console.log( 'ici' );
-		code = code.strReplace( " ", "" );
-		code = code.strReplace( "_", " " );
-		code = code.strReplace( "PRINT", '?' );
-		code = code.strReplace( "print", '?' );
-		code = code.strReplace( "Print", '?' );
-	}	
 	return code;
 }
 

@@ -351,7 +351,7 @@ function applyRLECompression( datas )
 	var newDatas = [];
 	var curData = -1;
 	var nData = 0;
-	var maxPacker = 255
+	var maxPacker = 255;
 	
 	if( formatData == 'str' )
 	{
@@ -398,17 +398,7 @@ function generateDEC( datas )
 	{
 		if( n == maxData )
 		{
-			res = res + "DATA " + line;
-			if( sep < 3 )
-			{
-				res = res + "/";
-			}
-			res = res + "\r\n";
-			sep++;
-			if( sep > 3 )
-			{
-				sep = 0;
-			}			
+			res = res + "DATA " + line + "\r\n";
 			line = "";
 			n = 0;
 		}
@@ -439,17 +429,7 @@ function generateHEX( datas )
 	{
 		if( n == maxData )
 		{
-			res = res + "DATA " + line;
-			if( sep < 3 )
-			{
-				res = res + "/";
-			}
-			res = res + "\r\n";
-			sep++;
-			if( sep > 3 )
-			{
-				sep = 0;
-			}			
+			res = res + "DATA " + line + "\r\n";
 			line = "";
 			n = 0;
 		}
@@ -485,22 +465,11 @@ function generateSTR( datas )
 	var res = "";
 	var line = "";
 	var n = 0;
-	var sep = 0;
 	for( var d = 0; d < datas.length; d++ )
 	{
 		if( n == maxData )
 		{
-			res = res + 'DATA "' + line + '"';
-			if( sep < 3 )
-			{
-				res = res + "/";
-			}
-			res = res + "\r\n";
-			sep++;
-			if( sep > 3 )
-			{
-				sep = 0;
-			}			
+			res = res + 'DATA "' + line + '"\r\n';
 			line = "";
 			n = 0;
 		}
@@ -508,35 +477,15 @@ function generateSTR( datas )
 		if( datas[ d ] != -1 )
 		{
 			var dt = datas[ d ];
-			if( dt > 90 )
-			{
-				console.log( "ERROR: Data value higher at 90 found by STR generator." );
-				process.exit( 1 );
-			}
-			
-			if( dt == 2 )
-			{
-				dt = 91;
-			}
-			
-			line = line + String.fromCharCode( dt + 32 );
+			line = line + String.fromCharCode( dt );
 			n++;
+
 		}
 	}
 
 	if( line != "" )
 	{
-		res = res + 'DATA "' + line + '"';
-		if( sep < 3 )
-		{
-			res = res + "/";
-		}
-		res = res + "\r\n";
-		sep++;
-		if( sep > 3 )
-		{
-			sep = 0;
-		}		
+		res = res + 'DATA "' + line + '"\r\n';
 	}
 	
 	return res;

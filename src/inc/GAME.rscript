@@ -5,16 +5,16 @@
 
 	If !NCLE = 0 And !NETOIL = 0 Then Gosub @open_door
 
-	If StickX( 2 ) = 1 And !JX < 38 Then Goto @move_right
-	If StickX( 2 ) = 255 And !JX > 0 Then Goto @move_left
-	If StickY( 2 ) = 1 And !JY < 22 Then Goto @move_down
-	If StickY( 2 ) = 255 And !JY > 1 Then Goto @move_up
-	
+	If StickX( 2 ) = 1 And !JX < 34 Then Goto @move_right
+	If StickX( 2 ) = 255 And !JX > 4 Then Goto @move_left
+	If StickY( 2 ) = 1 And !JY < 20 Then Goto @move_down
+	If StickY( 2 ) = 255 And !JY > 2 Then Goto @move_up
+	if Action( 2 ) <> 0 And !NBOMB > 0 Then Goto @bomb 
 	Goto @game_loop
 
 #label move_right
 	
-	If Peek( !ADR_PLAYER + 1 ) = 1 Or Peek( !ADR_PLAYER + 1 ) = 6 Then Goto @game_loop
+	If !MAP( !ADR_PLAYER + 1 ) = 1 Or !MAP( !ADR_PLAYER + 1 ) = 6 Then Goto @game_loop
 
 	Eg !LVLCOL,0,0 : CursorX !JX : CursorY !JY/
 	Gosub @restore_tile
@@ -25,7 +25,7 @@
 	
 #label move_left
 	
-	If Peek( !ADR_PLAYER - 1 ) = 1 Or Peek( !ADR_PLAYER - 1 ) = 6 Then Goto @game_loop
+	If !MAP( !ADR_PLAYER - 1 ) = 1 Or !MAP( !ADR_PLAYER - 1 ) = 6 Then Goto @game_loop
 	Eg !LVLCOL,0,0 : CursorX !JX : CursorY !JY/
 	Gosub @restore_tile
 	
@@ -35,53 +35,53 @@
 
 #label move_up
 	
-	If Peek( !ADR_PLAYER - 20 ) = 1 Or Peek( !ADR_PLAYER - 20 ) = 6 Then Goto @game_loop
+	If !MAP( !ADR_PLAYER - 16 ) = 1 Or !MAP( !ADR_PLAYER - 16 ) = 6 Then Goto @game_loop
 	Eg !LVLCOL,0,0 : CursorX !JX : CursorY !JY/
 	Gosub @restore_tile
 	
-	!ADR_PLAYER = !ADR_PLAYER - 20 : !JY = !JY - 2 : CursorX !JX : CursorY !JY/
+	!ADR_PLAYER = !ADR_PLAYER - 16 : !JY = !JY - 2 : CursorX !JX : CursorY !JY/
 	Gosub @update_tile
 	Goto @move_up
 
 #label move_down
 	
-	If Peek( !ADR_PLAYER + 20 ) = 1 Or Peek( !ADR_PLAYER + 20 ) = 6 Then Goto @game_loop
+	If !MAP( !ADR_PLAYER + 16 ) = 1 Or !MAP( !ADR_PLAYER + 16 ) = 6 Then Goto @game_loop
 	Eg !LVLCOL,0,0 : CursorX !JX : CursorY !JY/
 	Gosub @restore_tile
 	
-	!ADR_PLAYER = !ADR_PLAYER + 20 : !JY = !JY + 2 : CursorX !JX : CursorY !JY/
+	!ADR_PLAYER = !ADR_PLAYER + 16 : !JY = !JY + 2 : CursorX !JX : CursorY !JY/
 	Gosub @update_tile
 	Goto @move_down
 
 #label restore_tile
-	MV = Peek( !ADR_PLAYER )
-
+	MV = !MAP( !ADR_PLAYER )
+	If MV = 0 Then Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 111 )+Chr$( 111 )
 	If MV = 2 Or MV = 11 Then Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )
-	If MV = 3 Then Print Chr$( 35 )+Chr$( 36 )+!BRK$+Chr$( 73 )+Chr$( 74 )
-	If MV = 4 Then Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 75 )+Chr$( 76 )
-	If MV = 5 Then Print Chr$( 114 )+Chr$( 114 )+!BRK$+Chr$( 114 )+Chr$( 114 ) : Poke !ADR_PLAYER, 0
+	If MV = 3 Then Print Chr$( 35 )+Chr$( 36 )+!BRK$+Chr$( 72 )+Chr$( 73 )
+	If MV = 4 Then Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 74 )+Chr$( 75 )
+	If MV = 5 Then Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 111 )+Chr$( 111 ) : !MAP( !ADR_PLAYER ) = 0
 
 	Return
 	
 #label update_tile
-	Sound 15,1,7 : MV = Peek( !ADR_PLAYER )
+	Sound 15,1,7 : MV = !MAP( !ADR_PLAYER )
 
-	If MV = 0 Then Print Chr$( 49 )+Chr$( 50 )+!BRK$+Chr$( 87 )+Chr$( 88 ) : Goto @perd_vie
-	If MV = 2 Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 )
-	If MV = 3 Then Print Chr$( 53 )+Chr$( 54 )+!BRK$+Chr$( 91 )+Chr$( 92 ) 
-	If MV = 4 Then Print Chr$( 55 )+Chr$( 56 )+!BRK$+Chr$( 93 )+Chr$( 94 )
-	If MV = 5 Then Print Chr$( 57 )+Chr$( 58 )+!BRK$+Chr$( 95 )+Chr$( 96 )
-	If MV = 16 Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 ) : Poke !ADR_PLAYER, 2 : Gosub @take_star : Goto @game_loop
-	If MV = 18 Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 ) : Poke !ADR_PLAYER, 2 : Gosub @take_key : Goto @game_loop
-	If MV = 20 Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 ) : Poke !ADR_PLAYER, 2 : !NBOMB = !NBOMB + 1 : Goto @game_loop
-	If MV = 7 Then Print Chr$( 55 )+Chr$( 56 )+!BRK$+Chr$( 93 )+Chr$( 94 ) : Goto @fin_niveau
+	If MV = 0 Then Print Chr$( 48 )+Chr$( 49 )+!BRK$+Chr$( 86 )+Chr$( 87 ) : Goto @perd_vie
+	If MV = 2 Then Print Chr$( 50 )+Chr$( 51 )+!BRK$+Chr$( 88 )+Chr$( 89 )
+	If MV = 3 Then Print Chr$( 52 )+Chr$( 53 )+!BRK$+Chr$( 90 )+Chr$( 91 ) : Goto @elevator
+	If MV = 4 Then Print Chr$( 54 )+Chr$( 55 )+!BRK$+Chr$( 92 )+Chr$( 93 ) : Goto @teleport
+	If MV = 5 Then Print Chr$( 56 )+Chr$( 57 )+!BRK$+Chr$( 94 )+Chr$( 95 )
+	If MV = 16 Then Print Chr$( 50 )+Chr$( 51 )+!BRK$+Chr$( 88 )+Chr$( 89 ) : !MAP( !ADR_PLAYER ) = 2 : Gosub @take_star : Goto @game_loop
+	If MV = 18 Then Print Chr$( 50 )+Chr$( 51 )+!BRK$+Chr$( 88 )+Chr$( 89 ) : !MAP( !ADR_PLAYER ) = 2 : Gosub @take_key : Goto @game_loop
+	If MV = 20 Then Print Chr$( 50 )+Chr$( 51 )+!BRK$+Chr$( 88 )+Chr$( 89 ) : !MAP( !ADR_PLAYER ) = 2 : !NBOMB = !NBOMB + 1 : Goto @game_loop
+	If MV = 7 Then Print Chr$( 54 )+Chr$( 55 )+!BRK$+Chr$( 92 )+Chr$( 93 ) : Goto @fin_niveau
 
 	Display 5/
 	Return
 
 #label open_door
-	Eg !LVLCOL,0,0 : Poke !ADR_DOOR,7 : CursorX ( ( !PX - 1 ) * 2 ) : CursorY ( ( !PY - 1 ) * 2 )/
-	Print Chr$( 43 )+Chr$( 44 )+!BRK$+Chr$( 81 )+Chr$( 82 );/
+	Eg !LVLCOL,0,0 : !MAP( !ADR_DOOR ) = 7 : CursorX !PX : CursorY !PY/
+	Print Chr$( 43 )+Chr$( 44 )+!BRK$+Chr$( 80 )+Chr$( 81 );/
 	Display 2 : Play "T5O2ABCDEFGGG"
 	!NCLE=-1 : !NETOIL=-1 : Return
 
@@ -94,7 +94,90 @@
 	Play "T10O3G4"
 	!SC=!SC+10 : Gosub @update_infos : !NCLE = !NCLE - 1/
 	Return
+
+#label teleport
 	
+	TP=1/
+	Play "T10O3G4"/
+	CursorX !JX : CursorY !JY : Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 74 )+Chr$( 75 )
+	Play "T10O3G4"/
+	If !JX = !TELEPORT( 1 ) And !JY = !TELEPORT( 2 ) Then TP = 4
+	!JX = !TELEPORT( TP ) : !JY = !TELEPORT( TP + 1 ) : !ADR_PLAYER = !TELEPORT( TP + 2 )/
+	CursorX !JX : CursorY !JY : Print Chr$( 54 )+Chr$( 55 )+!BRK$+Chr$( 92 )+Chr$( 93 ):goto @game_loop		
+
+#label elevator
+	
+	Gosub @update_elevator
+	If !MAP(!ADR_PLAYER - 1) = 0 Then Goto @left_elevator
+	If !MAP(!ADR_PLAYER + 1) = 0 Then Goto @right_elevator
+	If !MAP(!ADR_PLAYER - 16) = 0 Then Goto @up_elevator
+	If !MAP(!ADR_PLAYER + 16) = 0 Then Goto @down_elevator
+
+#label left_elevator
+	If !MAP( !ADR_PLAYER - 1 ) <> 0 Or !JX = 4 Then Goto @game_loop
+	!JX = !JX - 2 : !ADR_PLAYER = !ADR_PLAYER - 1
+	Gosub @update_elevator/
+	!MAP( !ADR_PLAYER + 1 ) = 0	
+	CursorX !JX + 2 : CursorY !JY : Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 111 )+Chr$( 111 )/	
+	Display 5 : Goto @left_elevator
+	
+#label right_elevator
+	If !MAP( !ADR_PLAYER + 1 ) <> 0 Or !JX = 34 Then Goto @game_loop
+	!JX = !JX + 2 : !ADR_PLAYER = !ADR_PLAYER + 1
+	Gosub @update_elevator/
+	!MAP( !ADR_PLAYER - 1 ) = 0	
+	CursorX !JX - 2 : CursorY !JY : Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 111 )+Chr$( 111 )/	
+	Display 5 : Goto @right_elevator
+	
+#label up_elevator
+	If !MAP( !ADR_PLAYER - 16 ) <> 0 Or !JY = 2 Then Goto @game_loop
+	!JY = !JY - 2 : !ADR_PLAYER = !ADR_PLAYER - 16/
+	Gosub @update_elevator/
+	!MAP( !ADR_PLAYER + 16 ) = 0	
+	CursorX !JX : CursorY !JY + 2 : Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 111 )+Chr$( 111 )/	
+	Display 5 : Goto @up_elevator
+
+#label down_elevator
+	If !MAP( !ADR_PLAYER + 16 ) <> 0 Or !JY = 20 Then Goto @game_loop
+	!JY = !JY + 2 : !ADR_PLAYER = !ADR_PLAYER + 16/
+	Gosub @update_elevator/
+	!MAP( !ADR_PLAYER - 16 ) = 0 
+	CursorX !JX : CursorY !JY - 2 : Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 111 )+Chr$( 111 )/
+	Display 5 : Goto @down_elevator
+
+#label update_elevator
+	CursorX !JX : CursorY !JY : Print Chr$( 52 )+Chr$( 53 )+!BRK$+Chr$( 90 )+Chr$( 91 )/
+	!MAP( !ADR_PLAYER ) = 3/
+	Play "T1A7"
+	Return
+
+#label bomb
+	!NBOMB = !NBOMB - 1 : Play "T10O1A4B4C4D4"
+	If !JY > 2 And !MAP( !ADR_PLAYER-16 ) = 1 Then Goto @up_boom
+	If !JY < 20 And !MAP( !ADR_PLAYER+16 ) = 1 Then Goto @down_boom
+	If !JX > 4 And !MAP( !ADR_PLAYER-1 ) = 1 Then Goto @left_boom
+	If !JX < 34 And !MAP( !ADR_PLAYER+1 ) = 1 Then Goto @right_boom
+
+#label up_boom
+	!MAP( !ADR_PLAYER-16 ) = 2/
+	CursorX !JX : CursorY !JY - 2 : Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )/
+	Display5 : goto @game_loop
+
+#label down_boom
+	!MAP( !ADR_PLAYER-1 ) = 2/
+	CursorX !JX : CursorY !JY + 2 : Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )/
+	Display5 : goto @game_loop	
+
+#label left_boom
+	!MAP( !ADR_PLAYER-1 ) = 2/
+	CursorX !JX-2 : CursorY !JY : Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )/
+	Display5 : goto @game_loop	
+	
+#label right_boom
+	!MAP( !ADR_PLAYER+1 ) = 2/
+	CursorX !JX+2 : CursorY !JY : Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )/
+	Display5 : goto @game_loop
+
 #label update_infos
 	Et 7,0,0 : CursorX 5 : CursorY 24/
 	T1$ = Mid$( Str$( !SC ), 2, Len( Str$( !SC ) ) - 1 )
@@ -112,7 +195,7 @@
 #label perd_vie
 	Tx 7,0,0 : CursorX 0 : CursorY 24 : Print SPC(39);/
 	Et 1,0,0 : CursorX 13 : CursorY 24 : Print "HAAAAAaaaaa...";/
-	Display 2/
+	Display 2
 	!LV = !LV - 1 : Play "T10O1GFEDCBAAA"/
 	For R = 1 To 10 : Next R/
 	goto @restart_level

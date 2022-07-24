@@ -6,95 +6,92 @@
 	if !LEVEL = 2 Then Restore @map2
 	if !LEVEL = 3 Then Restore @map3
 	if !LEVEL = 4 Then Restore @map4
+	if !LEVEL = 5 Then Restore @map5
 
-	Init 2,0/
-	P = !ADR_LEVEL
+	Init 0,0/
+	P = 1
 #label read_data1
-	If P > !ADR_LEVEL + 240 Then Goto @stop_read
-	Read T1$ : T = 1
+	If P > 160 Then Goto @stop_read
 	
 #label read_data2
-	N = ASC( Mid$( T1$, T, 1 ) ) - 32/
-	V = ASC( Mid$( T1$, T+1, 1 ) ) - 32
-	For E = 1 To E = N/
-		Poke P, V/
-		P = P + 1/
-	Next E
-	T = T + 2/
-	If T < Len( T1$ ) Goto @read_data2
+	Read N,V
+	For E = 0 To N - 1 : !MAP( P + E ) = V : Next E
+	P = P + N
 
+	If P > 160 Then Goto @stop_read
+	Goto @read_data2/
 	Goto @read_data1
 
 #label stop_read
-	T1$ = "" : T2$ = "" : Return
+;	For E = 1 To 160
+;		Print Str$( !MAP( E ) );
+;	Next E
+;	End
+	Return
 
 ;
 ; Show the current level
 ;
 #label show_level
-	MX = 0 : MY = 0 : PC = 0 : !NETOIL = 0 : !NCLE = 0 : L = 1
-
+	MX = 4 : MY = 2 : !NETOIL = 0 : !NCLE = 0 : P = 1 : !ADR_DOOR = 0 : !ADR_PLAYER = 0 : NT = 1
 #label draw_line1
 	C = 1
 		
 #label draw_line2
 
-	MV = Peek( !ADR_LEVEL + ( ( C - 1 ) + ( ( L - 1 ) * 20 ) ) )/
+	MV = !MAP( P )/
 	Eg !LVLCOL,0,0 : CursorX MX : CursorY MY
 	
+	; Vide
+	If MV = 0 Then Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 111 )+Chr$( 111 )
 	
 	; Mur
-	If MV = 1 Then Print Chr$( 32 )+Chr$( 33 )+!BRK$+Chr$( 71 )+Chr$( 72 )
+	If MV = 1 Then Print Chr$( 32 )+Chr$( 33 )+!BRK$+Chr$( 70 )+Chr$( 71 )
 	
 	; Sol
 	If MV = 2 Then Print Chr$( 34 )+Chr$( 34 )+!BRK$+Chr$( 34 )+Chr$( 34 )
 	
 	; Elevator
-	If MV = 3 Then Print Chr$( 35 )+Chr$( 36 )+!BRK$+Chr$( 73 )+Chr$( 74 )
+	If MV = 3 Then Print Chr$( 35 )+Chr$( 36 )+!BRK$+Chr$( 72 )+Chr$( 73 )
 	
 	; Teleporter
-	If MV = 4 Then Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 75 )+Chr$( 76 )
+	If MV = 4 Then Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 74 )+Chr$( 75 ) : !TELEPORT( NT ) = MX : !TELEPORT( NT + 1 ) = MY : !TELEPORT( NT + 2 ) = P : NT = NT + 3 
 	
 	; Dalle cassable
-	If MV = 5 Then Print Chr$( 39 )+Chr$( 40 )+!BRK$+Chr$( 77 )+Chr$( 78 )
+	If MV = 5 Then Print Chr$( 39 )+Chr$( 40 )+!BRK$+Chr$( 76 )+Chr$( 77 )
 	
 	; Porte fermée
-	If MV = 6 Then Print Chr$( 41 )+Chr$( 42 )+!BRK$+Chr$( 79 )+Chr$( 80 ) : !PX = C : !PY = L : !ADR_DOOR = !ADR_LEVEL + ( ( C - 1 ) + ( ( L - 1 ) * 20 ) )
-	
+	If MV = 6 Then Print Chr$( 41 )+Chr$( 42 )+!BRK$+Chr$( 78 )+Chr$( 79 ) : !PX = MX : !PY = MY : !ADR_DOOR = P
 	
 	; Interrupteur ON
-	If MV = 8 Then Print Chr$( 45 )+Chr$( 46 )+!BRK$+Chr$( 83 )+Chr$( 84 )
+	If MV = 8 Then Print Chr$( 45 )+Chr$( 46 )+!BRK$+Chr$( 82 )+Chr$( 83 )
 	
 	; Mabool sol
-	If MV = 11 Then Print Chr$( 51 )+Chr$( 52 )+!BRK$+Chr$( 89 )+Chr$( 90 ) : !JX = MX : !JY = MY : !ADR_PLAYER = !ADR_LEVEL + ( ( C - 1 ) + ( ( L - 1 ) * 20 ) )
+	If MV = 11 Then Print Chr$( 50 )+Chr$( 51 )+!BRK$+Chr$( 88 )+Chr$( 89 ) : !JX = MX : !JY = MY : !ADR_PLAYER = P : !MAP(!ADR_PLAYER) = 2
 	
 	; Etoile sol
-	If MV = 16 Then Print Chr$( 61 )+Chr$( 62 )+!BRK$+Chr$( 99 )+Chr$( 100 ) : !NETOIL = !NETOIL + 1
+	If MV = 16 Then Print Chr$( 60 )+Chr$( 61 )+!BRK$+Chr$( 98 )+Chr$( 99 ) : !NETOIL = !NETOIL + 1
 	
 	; Clé sol
-	If MV = 18 Then Print Chr$( 65 )+Chr$( 66 )+!BRK$+Chr$( 103 )+Chr$( 104 ) : !NCLE = !NCLE + 1
+	If MV = 18 Then Print Chr$( 64 )+Chr$( 65 )+!BRK$+Chr$( 102 )+Chr$( 103 ) : !NCLE = !NCLE + 1
 	
 	; Bombe sol
-	If MV = 20 Then Print Chr$( 69 )+Chr$( 70 )+!BRK$+Chr$( 107 )+Chr$( 108 )
+	If MV = 20 Then Print Chr$( 68 )+Chr$( 69 )+!BRK$+Chr$( 106 )+Chr$( 107 )
 	
 	; Laser Horiz
-	If MV = 21 Then Print Chr$( 109 )+Chr$( 110 )+!BRK$+Chr$( 109 )+Chr$( 110 )
+	If MV = 21 Then Print Chr$( 108 )+Chr$( 109 )+!BRK$+Chr$( 108 )+Chr$( 109 )
 	
 	; Laser Vertic
-	If MV = 22 Then Print Chr$( 111 )+Chr$( 111 )+!BRK$+Chr$( 112 )+Chr$( 112 )
-	MX = MX + 2 : PC = PC + 1/
+	If MV = 22 Then Print Chr$( 110 )+Chr$( 110 )+!BRK$+Chr$( 112 )+Chr$( 112 )
+
+	MX = MX + 2 : P = P + 1/
 
 	Et 7,0,0 : CursorX 10 : CursorY 24/
-	T1$ = "LOADING_STAGE..." + Str$( Int( ( 100 / 240 ) * PC ) ) + "_%"/
-	Print T1$;
-
+	Print "LOADING_STAGE..." + Str$( Int( ( 100 / 160 ) * P ) ) + "_%";/
 	C = C + 1/
-	If C < 20 Then Goto @draw_line2
+	If C = 17 Then MY = MY + 2 : MX = 4 : C = 1
+	If P < 160 Then Goto @draw_line2
 
-	MY = MY + 2 : MX = 0/
-	L = L + 1
-	If L < 12 Then Goto @draw_line1
-	
 	Gosub @update_infos/
 	T1$ = ""/
 	Return
