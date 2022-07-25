@@ -5,11 +5,11 @@
 
 	If !NCLE = 0 And !NETOIL = 0 Then Gosub @open_door
 
-	If StickX( 2 ) = 1 And !JX < 34 Then Goto @move_right
-	If StickX( 2 ) = 255 And !JX > 4 Then Goto @move_left
-	If StickY( 2 ) = 1 And !JY < 20 Then Goto @move_down
-	If StickY( 2 ) = 255 And !JY > 2 Then Goto @move_up
-	if Action( 2 ) <> 0 And !NBOMB > 0 Then Goto @bomb 
+	If StickX( 0 ) = 1 Or StickX( 2 ) = 1 And !JX < 34 Then Goto @move_right
+	If StickX( 0 ) = 255 Or StickX( 2 ) = 255 And !JX > 4 Then Goto @move_left
+	If StickY( 0 ) = 1 Or StickY( 2 ) = 1 And !JY < 20 Then Goto @move_down
+	If StickY( 0 ) = 255 Or StickY( 2 ) = 255 And !JY > 2 Then Goto @move_up
+	if Action( 0 ) <> 0 Or Action( 2 ) <> 0 And !NBOMB > 0 Then Goto @bomb 
 	Goto @game_loop
 
 #label move_right

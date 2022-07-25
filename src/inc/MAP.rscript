@@ -7,7 +7,10 @@
 	if !LEVEL = 3 Then Restore @map3
 	if !LEVEL = 4 Then Restore @map4
 	if !LEVEL = 5 Then Restore @map5
-
+	if !LEVEL = 6 Then Restore @map6
+	if !LEVEL = 7 Then Restore @map7
+	if !LEVEL = 8 Then Restore @map8
+	
 	Init 0,0/
 	P = 1
 #label read_data1
