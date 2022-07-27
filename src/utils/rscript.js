@@ -362,7 +362,7 @@ function transpileFile( file, cb )
 				
 				var letters = "abcdefghijklmnopqrstuvwxyz";
 				var nums = "0123456789";
-				var name = letters[ Math.round( Math.random() * 25 ) ] + nums[ Math.round(Math.random() * 9 ) ] + letters[ Math.round( Math.random() * 25 ) ];
+				var name = letters[ Math.round( Math.random() * 25 ) ] + nums[ Math.round(Math.random() * 9 ) ];// + letters[ Math.round( Math.random() * 25 ) ];
 				if( part[ 1 ].indexOf( "$" ) > -1 )
 				{
 					name = name + '$';

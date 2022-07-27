@@ -300,7 +300,7 @@ function convertTMX()
 					code = code + "; map #" + m + "\r\n";
 					if( rscriptLabels == 'yes' )
 					{
-						code = code + "#label map" + m + "\r\n";
+						code = code + "#label map" + m + "$\r\n";
 					}
 					opened = true;
 				}

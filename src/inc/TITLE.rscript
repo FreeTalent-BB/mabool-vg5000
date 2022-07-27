@@ -15,7 +15,7 @@ DATA 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 		Read A : CursorX X : CursorY Y
 		If A = 0 Then Eg 4,0,0 : Print Chr$(34);
 		If A = 1 Then Eg 6,0,0 : Print Chr$(34);
-		If A = 2 Then Eg 7,0,0 : Print Chr$(113);
+		If A = 2 Then Eg 7,0,0 : Print Chr$(115);
 		
 		X = X + 1:If X = 40 Then X=0:Y=Y+1
 	Next R
@@ -43,10 +43,10 @@ DATA 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 	Et 6,0,0 : CursorX 6 : CursorY 16: Print"EXIT_DOOR";/
 	Et 6,0,0 : CursorX 6 : CursorY 19: Print"BOMB";:Et 3,0,0 : CursorX 6 : CursorY 20:Print"TO_DESTROY";:CursorX 6 : CursorY 21:Print"WALLS";:
 	
-	Et 6,0,0 : CursorX 25 : CursorY 10: Print"ELEVATOR";/
+	Et 6,0,0 : CursorX 26 : CursorY 10: Print"ELEVATOR";/
 	Et 6,0,0 : CursorX 26 : CursorY 13: Print"TELEPORTER";
-	Et 6,0,0 : CursorX 25 : CursorY 16: Print"BROKEN_GROUND";/
-	Et 6,0,0 : CursorX 25 : CursorY 19: Print"LASER_SWITCH";
+	Et 6,0,0 : CursorX 26 : CursorY 16: Print"BROKEN_GROUND";/
+	Et 6,0,0 : CursorX 26 : CursorY 19: Print"LASER_SWITCH";
 	
 	
 	Return

@@ -2,24 +2,31 @@
 ; Load the current level
 ;
 #label load_level
-	if !LEVEL = 1 Then Restore @map1
-	if !LEVEL = 2 Then Restore @map2
-	if !LEVEL = 3 Then Restore @map3
-	if !LEVEL = 4 Then Restore @map4
-	if !LEVEL = 5 Then Restore @map5
-	if !LEVEL = 6 Then Restore @map6
-	if !LEVEL = 7 Then Restore @map7
-	if !LEVEL = 8 Then Restore @map8
+	If !LEVEL = 1 Then Restore @map1$
+	If !LEVEL = 2 Then Restore @map2$
+	If !LEVEL = 3 Then Restore @map3$
+	If !LEVEL = 4 Then Restore @map4$
+	If !LEVEL = 5 Then Restore @map5$
+	If !LEVEL = 6 Then Restore @map6$
+	If !LEVEL = 7 Then Restore @map7$
+	If !LEVEL = 8 Then Restore @map8$
+	If !LEVEL = 9 Then Restore @map9$
+	If !LEVEL = 10 Then Restore @map10$
+	If !LEVEL = 11 Then Restore @map11$
+	If !LEVEL = 12 Then Restore @map12$
+	If !LEVEL = 13 Then Restore @map13$
+	If !LEVEL = 14 Then Restore @map14$
+	If !LEVEL = 15 Then Restore @map15$
+	If !LEVEL = 16 Then Restore @map16$
 	
-	Init 0,0/
-	P = 1
+	Init 0,0: P = 1 : !NLASER = 0
 #label read_data1
 	If P > 160 Then Goto @stop_read
 	
 #label read_data2
-	Read N,V
+	Read N,V/
 	For E = 0 To N - 1 : !MAP( P + E ) = V : Next E
-	P = P + N
+	P = P + N/
 
 	If P > 160 Then Goto @stop_read
 	Goto @read_data2/
@@ -82,10 +89,13 @@
 	If MV = 20 Then Print Chr$( 68 )+Chr$( 69 )+!BRK$+Chr$( 106 )+Chr$( 107 )
 	
 	; Laser Horiz
-	If MV = 21 Then Print Chr$( 108 )+Chr$( 109 )+!BRK$+Chr$( 108 )+Chr$( 109 )
+	If MV = 21 Then Print Chr$( 108 )+Chr$( 109 )+!BRK$+Chr$( 108 )+Chr$( 109 ) : !NLASER = !NLASER + 1 : !LASER(!NLASER)=P : !LASERX(!NLASER)=MX:!LASERY(!NLASER)=MY
 	
 	; Laser Vertic
-	If MV = 22 Then Print Chr$( 110 )+Chr$( 110 )+!BRK$+Chr$( 112 )+Chr$( 112 )
+	If MV = 22 Then Print Chr$( 110 )+Chr$( 110 )+!BRK$+Chr$( 114 )+Chr$( 114 ) : !NLASER = !NLASER + 1 : !LASER(!NLASER)=P : !LASERX(!NLASER)=MX:!LASERY(!NLASER)=MY
+
+	; box
+	If MV = 41 Then Print Chr$( 112 )+Chr$( 113 )+!BRK$+Chr$( 116 )+Chr$( 117 )
 
 	MX = MX + 2 : P = P + 1/
 

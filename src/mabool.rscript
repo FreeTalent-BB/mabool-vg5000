@@ -1,20 +1,44 @@
+;
+;  /$$      /$$  /$$$$$$  /$$$$$$$   /$$$$$$   /$$$$$$  /$$      
+; | $$$    /$$$ /$$__  $$| $$__  $$ /$$__  $$ /$$__  $$| $$      
+; | $$$$  /$$$$| $$  \ $$| $$  \ $$| $$  \ $$| $$  \ $$| $$      
+; | $$ $$/$$ $$| $$$$$$$$| $$$$$$$ | $$  | $$| $$  | $$| $$      
+; | $$  $$$| $$| $$__  $$| $$__  $$| $$  | $$| $$  | $$| $$      
+; | $$\  $ | $$| $$  | $$| $$  \ $$| $$  | $$| $$  | $$| $$      
+; | $$ \/  | $$| $$  | $$| $$$$$$$/|  $$$$$$/|  $$$$$$/| $$$$$$$$
+; |__/     |__/|__/  |__/|_______/  \______/  \______/ |________/
+;
+;                 Baptiste BIDEAUX (c)2022.
+;
+
+; Convert PNG to user characters
 #img2char "source":"./graphics/font.png","m":"vg5000","cl":"yes","eteg":"et","o":"./inc/FONT.rscript"
 #img2char "source":"./graphics/sprites.png","m":"vg5000","cl":"yes","eteg":"eg","o":"./inc/SPRITES.rscript"
+
+; Variable declaration for renaming
 #var brk$
 
+; Include files
 #INCLUDE inc.FONT
 #INCLUDE inc.SPRITES
 
+; Draw Title and rules
 Gosub @draw_title
 Gosub @draw_rules
 
+; Main loop
 #label root
+	
+	; Wait a pressing on the fire button or space bar
 	If Action( 0 ) <> 0 Or Action( 2 ) <> 0 Goto @load_game
 	Goto @root
 
+#INCLUDE inc.TITLE
+
+; Load the game
 #label load_game
 Tx 0,0,0 : CLOAD"main"
 
-#INCLUDE inc.TITLE
+
 
 
