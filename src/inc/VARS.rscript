@@ -18,9 +18,10 @@
 #var laserx
 #var lasery
 #var laser
-Clear 1000 : !LVLCOL = 1 : !LEVEL = 1 : Dim !MAP( 160 )/
-!ADR_PLAYER = 0: !JX = 0 : !JY = 0/
-!SC = 0 : !LV = 4 : !ADR_DOOR = 0 : !PX = 0 : !PY = 0 : Dim !TELEPORT( 6 )
+Clear 350 : Dim !MAP( 160 ) : Dim !TELEPORT( 6 ) : Dim !LASERX(20),!LASERY(20),!LASER(20)
+!BRK$ = "" + Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )/
+!LVLCOL = 1 : !LEVEL = 1/
+!ADR_PLAYER = 0: !JX = 0 : !JY = 0
+!SC = 0 : !LV = 4 : !ADR_DOOR = 0 : !PX = 0 : !PY = 0/ 
 !NETOIL = 0 : !NCLE = 0 : !NBOMB = 0/
-!NLASER = 0 : Dim !LASERX(20),!LASERY(20),!LASER(20)/
-!BRK$ = "" + Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )
+!NLASER = 0 

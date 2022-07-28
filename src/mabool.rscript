@@ -17,7 +17,7 @@
 
 ; Variable declaration for renaming
 #var brk$
-
+clear 250
 ; Include files
 #INCLUDE inc.FONT
 #INCLUDE inc.SPRITES
@@ -37,8 +37,5 @@ Gosub @draw_rules
 
 ; Load the game
 #label load_game
-Tx 0,0,0 : CLOAD"main"
-
-
-
-
+Init 0,0: Et 1,1,0 : CursorX 14:CursorY 9 : Print"LOADING_GAME": CursorX 14: CursorY 10 : Print"LOADING_GAME" 
+Tx 7,0,0: CursorY 18 : CLoad"MAIN"

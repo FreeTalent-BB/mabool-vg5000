@@ -104,7 +104,8 @@
 	C = C + 1/
 	If C = 17 Then MY = MY + 2 : MX = 4 : C = 1
 	If P < 160 Then Goto @draw_line2
-
+	
+	Tx 7,0,0 : CursorX 0 : CursorY 24 : Print SPC(39);/
 	Gosub @update_infos/
 	T1$ = ""/
 	Return
