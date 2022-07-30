@@ -10,44 +10,46 @@ DATA 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 #label draw_title
 	RESTORE @title
-	Init 0, 0 : X = 0 : Y = 0
-	For R = 1 To 320
-		Read A : CursorX X : CursorY Y
-		If A = 0 Then Eg 4,0,0 : Print Chr$(34);
-		If A = 1 Then Eg 6,0,0 : Print Chr$(34);
-		If A = 2 Then Eg 7,0,0 : Print Chr$(115);
+	Init 0, 0 : !TITLE_X = 0 : !TITLE_Y = 0
+	For !FOR_VAR = 1 To 320
+		Read !TITLE_VALUE : CursorX !TITLE_X : CursorY !TITLE_Y
+		If !TITLE_VALUE = 0 Then Eg 4,0,0 : Print Chr$(34);
+		If !TITLE_VALUE = 1 Then Eg 6,0,0 : Print Chr$(34);
+		If !TITLE_VALUE = 2 Then Eg 7,0,0 : Print *Chr$(115);
 		
-		X = X + 1:If X = 40 Then X=0:Y=Y+1
-	Next R
+		!TITLE_X = !TITLE_X + 1:If !TITLE_X = 40 Then !TITLE_X=0:!TITLE_Y=!TITLE_Y+1
+	Next !FOR_VAR
 
-	Et 3,0,1 : CursorX 15 : CursorY 8 : Print "PRESS_FIRE";/
+	Et 3,0,1 : CursorX 15 : CursorY 8
+	If !JOYID=1 Then Print "PRESS_FIRE";
+	If !JOYID=2 Then CursorX13:Print "PRESS_SPACEBAR";
+	
 	Et 7,0,0 : CursorX 8 : CursorY 24 : Print "BAPTISTE_BIDEAUX_(c)2022.";
 	Return
 
 #label draw_rules
 
-	!BRK$ = "" + Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )
-	Eg 7,0,0 : CursorX 2 : CursorY 10 : Print Chr$( 50 )+Chr$( 51 )+!BRK$+Chr$( 88 )+Chr$( 89 )
-	CursorX 1 : CursorY 13 : Print Chr$( 58 )+Chr$( 59 )+!BRK$+Chr$( 96 )+Chr$( 97 )/
-	CursorX 3 : CursorY 13 : Print Chr$( 62 )+Chr$( 63 )+!BRK$+Chr$( 100 )+Chr$( 101 )
-	CursorX 2 : CursorY 16 : Print Chr$( 41 )+Chr$( 42 )+!BRK$+Chr$( 78 )+Chr$( 79 )/
-	CursorX 2 : CursorY 19 : Print Chr$( 66 )+Chr$( 67 )+!BRK$+Chr$( 104 )+Chr$( 105 )
+	!BREAK$ = Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )
+	Eg 7,0,0 : CursorX 2 : CursorY 10 : Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 )
+	CursorX 1 : CursorY 13 : Print *Chr$( 58 )+*Chr$( 59 )+!BREAK$+*Chr$( 96 )+*Chr$( 97 )/
+	CursorX 3 : CursorY 13 : Print *Chr$( 62 )+*Chr$( 63 )+!BREAK$+*Chr$( 100 )+*Chr$( 101 )
+	CursorX 2 : CursorY 16 : Print *Chr$( 41 )+*Chr$( 42 )+!BREAK$+*Chr$( 78 )+*Chr$( 79 )/
+	CursorX 2 : CursorY 19 : Print *Chr$( 66 )+*Chr$( 67 )+!BREAK$+*Chr$( 104 )+*Chr$( 105 )
 	
-	CursorX 22 : CursorY 10 : Print Chr$( 35 )+Chr$( 36 )+!BRK$+Chr$( 72 )+Chr$( 73 )/
-	CursorX 22 : CursorY 13 : Print Chr$( 37 )+Chr$( 38 )+!BRK$+Chr$( 74 )+Chr$( 75 )
-	CursorX 22 : CursorY 16 : Print Chr$( 39 )+Chr$( 40 )+!BRK$+Chr$( 76 )+Chr$( 77 )/
-	CursorX 22 : CursorY 19 : Print Chr$( 45 )+Chr$( 46 )+!BRK$+Chr$( 82 )+Chr$( 83 )
+	CursorX 22 : CursorY 10 : Print *Chr$( 35 )+*Chr$( 36 )+!BREAK$+*Chr$( 72 )+*Chr$( 73 )/
+	CursorX 22 : CursorY 13 : Print *Chr$( 37 )+*Chr$( 38 )+!BREAK$+*Chr$( 74 )+*Chr$( 75 )
+	CursorX 22 : CursorY 16 : Print *Chr$( 39 )+*Chr$( 40 )+!BREAK$+*Chr$( 76 )+*Chr$( 77 )/
+	CursorX 22 : CursorY 19 : Print *Chr$( 45 )+*Chr$( 46 )+!BREAK$+*Chr$( 82 )+*Chr$( 83 )
 
 	Et 6,0,0 : CursorX 6 : CursorY 10: Print"MABOOL";:Et 3,0,0 : CursorX 6 : CursorY 11:Print"SPHERICAL_HERO";/
 	Et 6,0,0 : CursorX 6 : CursorY 13: Print"STARS_&_KEY";:Et 3,0,0 : CursorX 6 : CursorY 14:Print"GET_THEM_ALL";
-	Et 6,0,0 : CursorX 6 : CursorY 16: Print"EXIT_DOOR";/
-	Et 6,0,0 : CursorX 6 : CursorY 19: Print"BOMB";:Et 3,0,0 : CursorX 6 : CursorY 20:Print"TO_DESTROY";:CursorX 6 : CursorY 21:Print"WALLS";:
+	Et 6,0,0 : CursorX 6 : CursorY 16: Print"EXIT_DOOR";
+	Et 6,0,0 : CursorX 6 : CursorY 19: Print"BOMB";:Et 3,0,0 : CursorX 6 : CursorY 20:Print"TO_DESTROY";:CursorX 6 : CursorY 21:Print"WALLS";
 	
 	Et 6,0,0 : CursorX 26 : CursorY 10: Print"ELEVATOR";/
 	Et 6,0,0 : CursorX 26 : CursorY 13: Print"TELEPORTER";
 	Et 6,0,0 : CursorX 26 : CursorY 16: Print"BROKEN_GROUND";/
 	Et 6,0,0 : CursorX 26 : CursorY 19: Print"LASER_SWITCH";
-	
 	
 	Return
 	

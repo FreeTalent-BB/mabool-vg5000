@@ -16,13 +16,27 @@
 #img2char "source":"./graphics/sprites.png","m":"vg5000","cl":"yes","eteg":"eg","o":"./inc/SPRITES.rscript"
 
 ; Variable declaration for renaming
-#var brk$
-clear 250
+#var break$
+#var title_x
+#var title_y
+#var key_action
+#var for_var
+#var title_value
+
+Clear 350
 ; Include files
 #INCLUDE inc.FONT
 #INCLUDE inc.SPRITES
 
+;Init 0,0
+;For !FOR_VAR = 32 To 117
+;	Tx 7,0,0 : Print Str$(!FOR_VAR)+"= ";
+;	Eg 7,0,0 : Print *Chr$(!FOR_VAR);
+;Next !FOR_VAR
+;end
+
 ; Draw Title and rules
+Gosub @check_joystick
 Gosub @draw_title
 Gosub @draw_rules
 
@@ -30,10 +44,13 @@ Gosub @draw_rules
 #label root
 	
 	; Wait a pressing on the fire button or space bar
-	If Action( 0 ) <> 0 Or Action( 2 ) <> 0 Goto @load_game
+	If !JOYID = 1 Then !KEY_ACTION = Action( 1 ) + Action( 2 )
+	If !JOYID=2 Then !KEY_ACTION = Action( 2 )
+	If !KEY_ACTION = 1 Then Goto @load_game
 	Goto @root
 
 #INCLUDE inc.TITLE
+#INCLUDE inc.JOYTESTER
 
 ; Load the game
 #label load_game

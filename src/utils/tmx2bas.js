@@ -534,22 +534,6 @@ function convertData( datas )
 			
 			if( value != -1 && !isNaN( value ) )
 			{
-				if( value == 15 )
-				{
-					w = v;
-					if( ln == 0 )
-					{
-						res = w + ',"' + res + '"';
-					}
-					return res;
-
-				}
-				
-				if( value == 17 )
-				{
-					res = '"*"';
-					return res;
-				}
 				
 				if( value != -1 )
 				{

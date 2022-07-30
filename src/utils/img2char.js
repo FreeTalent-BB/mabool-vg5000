@@ -19,14 +19,14 @@ function img2char( options, cb )
 {
 	imgFile = options.source;
 	
-	n = (options.n)?options.n:127;
-	c = (options.c)?options.c:"#FFFFFF";
-	o = (options.o)?options.o:"./output.bas";
-	s = (options.s)?options.s:0;
-	m = (options.m)?options.m:"cpc";
-	ns = (options.ns)?options.ns:32;
-	cl = (options.cl)?options.cl:"no";
-	eteg= (options.eteg)?options.eteg:"et";
+	n = (options.n!=undefined)?options.n:127;
+	c = (options.c!=undefined)?options.c:"#FFFFFF";
+	o = (options.o!=undefined)?options.o:"./output.bas";
+	s = (options.s!=undefined)?options.s:0;
+	m = (options.m!=undefined)?options.m:"cpc";
+	ns = (options.ns!=undefined)?options.ns:32;
+	cl = (options.cl!=undefined)?options.cl:"no";
+	eteg= (options.eteg!=undefined)?options.eteg:"et";
 	convertIMG( cb );	
 }
 exports.img2char = img2char
@@ -35,7 +35,7 @@ var myArgs = [];
 if( PATH.basename( process.argv[ 1 ] ).toLowerCase() == 'img2char.js' )
 {
 
-	console.log( 'IMG2CHAR v1.0-1 by Baptiste Bideaux.' );
+	console.log( 'IMG2CHAR v1.0-2 by Baptiste Bideaux.' );
 	console.log( '------------------------------------' );
 	console.log( ' ' );
 	
@@ -186,8 +186,8 @@ var captureSettings =
         height: 8,
         headerBASIC: 
         [
-            'SYMBOL AFTER %NS-',
-            'FOR I=O TO ' + ( n - 1),
+            'SYMBOL AFTER %NS-1',
+            'FOR I=0 TO %N-1',
             'READ A$,B$,C$,D$,E$,F$,G$,H$',
             'SYMBOL %NS+I,VAL("&"+A$),VAL("&"+B$),VAL("&"+C$),VAL("&"+D$),VAL("&"+E$),VAL("&"+F$),VAL("&"+G$),VAL("&"+H$)',
             'NEXT I'
@@ -211,10 +211,10 @@ var captureSettings =
         height: 8,
         headerBASIC: 
         [
-            'CLEAR ,,%NS',
-            'FOR I=0 TO %NS-1',
+            'CLEAR ,,%N',
+            'FOR I=0 TO %N-1',
             'READ A$,B$,C$,D$,E$,F$,G$,H$',
-            'DEFGR$(%NS-I)=VAL("&H"+A$),VAL("&H"+B$),VAL("&H"+C$),VAL("&H"+D$),VAL("&H"+E$),VAL("&H"+F$),VAL("&H"+G$),VAL("&H"+H$)',
+            'DEFGR$(%NS+I)=VAL("&H"+A$),VAL("&H"+B$),VAL("&H"+C$),VAL("&H"+D$),VAL("&H"+E$),VAL("&H"+F$),VAL("&H"+G$),VAL("&H"+H$)',
             'NEXT I'
         ],
         dataBASIC: 'DATA %1,%2,%3,%4,%5,%6,%7,%8',
@@ -284,7 +284,8 @@ function captureProcess( cb )
     var chars = [];
     var char = [];
     var line = '';
-	
+	var nchar = 0;
+	var indexChar = ns;
 	var memChar = [];
 
     while( chars.length < n )
@@ -334,6 +335,7 @@ function captureProcess( cb )
 		if( captureSettings[ m ].headerBASIC )
 		{
 			code = captureSettings[ m ].headerBASIC.join( "\r\n" );
+			code = code + "\r\n";
 		}
 		
         var nd = [ '%1', '%2', '%3','%4','%5','%6','%7','%8','%9','%A' ];
@@ -352,7 +354,7 @@ function captureProcess( cb )
                 }
                 lineData = lineData.strReplace( nd[ l ], hx );
             }
-			
+
 			if( memChar.indexOf( lineData ) > -1 && cl == "yes" )
 			{
 				lineData = '';
@@ -364,14 +366,20 @@ function captureProcess( cb )
 			
 			if( lineData != '' )
 			{
-				lineData = lineData.strReplace( "%NS", ns );
 				
 				if( m == 'vg5000' )
 				{
 					lineData = lineData.strReplace( "%ETEG", eteg.toUpperCase() );
 				}
-				
+				lineData = lineData.strReplace( "%NS", indexChar );
+				nchar++;
 				code = code + lineData;
+				
+				if( m == 'thomson' )
+				{
+					sep = 3;
+				}
+				
 				if( sep < 2 )
 				{
 					code = code + "/";
@@ -381,9 +389,9 @@ function captureProcess( cb )
 				{
 					sep = 0;
 				}
-				
 				code = code + "\r\n";
-				ns++;
+				
+				indexChar++;
 			}
         }
     }
@@ -392,6 +400,9 @@ function captureProcess( cb )
 	{
 		code = code + captureSettings[ m ].endBASIC.join( "\r\n" );
 	}
+	
+	code = code.strReplace( "%NS", ns );
+	code = code.strReplace( "%N", nchar );
 	
     FS.writeFileSync( o, code + "\r\n", 'utf8' );
     console.log( 'Code BASIC created in ' + o );

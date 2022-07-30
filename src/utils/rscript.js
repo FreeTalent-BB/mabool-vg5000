@@ -4,6 +4,10 @@ const FS = require( 'fs' );
 var fileSource = undefined;
 var o = "./code.bas";
 var nl = 1;
+var vl1 = 0;
+var vn1 = -1;
+var vl2 = -1;
+var vn2 = -1;
 var vars = [];
 var labels = [];
 var labelNames = {};
@@ -56,7 +60,7 @@ exports.rscript = rscript;
 var myArgs = [];
 if( PATH.basename( process.argv[ 1 ] ).toLowerCase() == 'rscript.js' )
 {
-	console.log( 'RSCRIPT v1.0-2 by Baptiste Bideaux' );
+	console.log( 'RSCRIPT v1.0-3 by Baptiste Bideaux' );
 	console.log( '----------------------------------' ); 
 	console.log( '' );
 
@@ -134,14 +138,41 @@ function finalizeCode()
 	{
 		return false;
 	}
-
+	
 	if( compress )
 	{
+		code = code.strReplace( 'then goto', 'then' );
+		code = code.strReplace( 'THEN GOTO', 'then' );
+		code = code.strReplace( 'Then goto', 'then' );
+		code = code.strReplace( 'then Goto', 'then' );
+		code = code.strReplace( 'Then Goto', 'then' );
+
 		code = code.strReplace( " ", "" );
 		code = code.strReplace( "_", " " );
 		code = code.strReplace( "PRINT", '?' );
 		code = code.strReplace( "print", '?' );
 		code = code.strReplace( "Print", '?' );
+		
+		for( var i = 32; i< 123;i++)
+		{
+			if( i != 34 && i != 95 )
+			{
+				code = code.strReplace( '*chr$(' + i + ')', '"' + String.fromCharCode( i ) + '"' );
+				code = code.strReplace( '*CHR$(' + i + ')', '"' + String.fromCharCode( i ) + '"' );
+				code = code.strReplace( '*Chr$(' + i + ')', '"' + String.fromCharCode( i ) + '"' );
+				code = code.strReplace( '*chr$( ' + i + ' )', '"' + String.fromCharCode( i ) + '"' );
+				code = code.strReplace( '*CHR$( ' + i + ' )', '"' + String.fromCharCode( i ) + '"' );
+				code = code.strReplace( '*Chr$( ' + i + ' )', '"' + String.fromCharCode( i ) + '"' );
+			}
+			
+		}
+		code = code.strReplace( '"+"', '' );
+		code = code.strReplace( '" + "', '' );
+		
+//		code = code.strReplace( '"+', '"' );
+//		code = code.strReplace( '" +', '"' );
+//		code = code.strReplace( '$+"', '$"' );
+//		code = code.strReplace( '$ + "', '$"' );
 	}
 	
 	// Verifie le code
@@ -362,7 +393,48 @@ function transpileFile( file, cb )
 				
 				var letters = "abcdefghijklmnopqrstuvwxyz";
 				var nums = "0123456789";
-				var name = letters[ Math.round( Math.random() * 25 ) ] + nums[ Math.round(Math.random() * 9 ) ];// + letters[ Math.round( Math.random() * 25 ) ];
+				var name = letters[ vl1 ];
+				vl1++;
+				if( vl1>25)
+				{
+					vl1=0;
+					vn1=0;
+				}
+				
+				if(vn1 > -1)
+				{
+					name = name + nums[ vn1 ];
+					vn1++;
+					if(vn1 > 9 )
+					{
+						vn1=0;
+						vl2=0;
+					}
+				}
+
+
+				if(vl2 > -1)
+				{
+					name = name + letters[ vl2 ];
+					vl2++;
+					if(vl2>25)
+					{
+						vl2=0;
+						vn2=0;
+					}
+				}
+
+				if(vn2 > -1)
+				{
+					name = name + nums[ vn2 ];
+					vn2++;
+					if( vn2>9)
+					{
+						console.log( 'ERROR: Too many variables' );
+						process.exit(1);
+					}
+				}
+				
 				if( part[ 1 ].indexOf( "$" ) > -1 )
 				{
 					name = name + '$';

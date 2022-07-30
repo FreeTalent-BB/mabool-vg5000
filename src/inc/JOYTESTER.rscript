@@ -1,0 +1,25 @@
+#var joyid
+#var joyt
+#var joyp
+
+!JOYID = 1
+#label check_joystick
+	Init 0,0: Et 3,1,0 : CursorX 8:CursorY 9 : Print"CHECKING_FOR_JOYSTICK_1": CursorX 8: CursorY 10 : Print"CHECKING_FOR_JOYSTICK_1" 
+	CursorX 7:CursorY 11 : Print"DON'T_MOVE_DURING_THE_TEST": CursorX 7: CursorY 12 : Print"DON'T_MOVE_DURING_THE_TEST" 
+	!JOYT=0:!JOYP=0
+
+#label test_joy
+	if StickX( 1 )<>0 Or StickY( 1 )<>0 Or Action( 1 )<>0 Then !JOYT=!JOYT+1
+	If !JOYT=100 Then Goto @test_ko
+	!JOYP=!JOYP+1
+	If !JOYP=200 Then Goto @test_ok
+	Goto @test_joy
+
+#label test_ko
+	!JOYID = 2
+	Return
+
+#label test_ok
+	If !JOYT > 49 Then !JOYID = 2
+	If !JOYT < 50 Then !JOYID = 1
+	Return
