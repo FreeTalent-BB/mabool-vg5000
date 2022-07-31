@@ -33,6 +33,26 @@
 #var for_var
 #var column
 
+#const wall=1
+#const ground=2
+#const elevator=3
+#const teleporter=4
+#const broken=5
+#const door_closed=6
+#const door_opened=26
+#const switch_on=7
+#const switch_off=27
+#const mabool_ground=8
+#const mabool_elevator=28
+#const mabool_teleporter=38
+#const mabool_broken=58
+#const star_ground=9
+#const key_ground=10
+#const bomb_ground=11
+#const laserh=12
+#const laserv=13
+#const box=14 
+
 Clear 350 : Dim !MAP( 160 ) : Dim !TELEPORT( 6 ) : Dim !LASER_X(20),!LASER_Y(20),!LASER(20)
 !BREAK$ = Chr$( 8 ) + Chr$( 8 ) + Chr$( 10 )/
 !LEVEL_COLOR = 1 : !LEVEL = 1/

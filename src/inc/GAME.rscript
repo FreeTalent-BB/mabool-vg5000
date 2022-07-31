@@ -17,9 +17,9 @@
 
 #label move_right
 	Eg !LEVEL_COLOR,0,0 : CursorX !PLAYER_X : CursorY !PLAYER_Y/
-	If !MAP( !ADR_PLAYER + 1) = 41 And !MOVES=1 Then Goto @box_right
-	If !MAP( !ADR_PLAYER + 1) = 8 And !MOVES=1 Then !MAP( !ADR_PLAYER + 1) = 9 : CursorX !PLAYER_X+2 : CursorY !PLAYER_Y:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
-	If !MAP( !ADR_PLAYER + 1 ) = 1 Or !MAP( !ADR_PLAYER + 1 ) = 6 Or !MAP( !ADR_PLAYER + 1 ) = 8 Or !MAP( !ADR_PLAYER + 1 ) = 9 Or !MAP( !ADR_PLAYER + 1 ) = 41 Then Goto @game_loop
+	If !MAP( !ADR_PLAYER + 1) = !BOX And !MOVES=1 Then Goto @box_right
+	If !MAP( !ADR_PLAYER + 1) = !SWITCH_ON And !MOVES=1 Then !MAP( !ADR_PLAYER + 1) = !SWITCH_OFF : CursorX !PLAYER_X+2 : CursorY !PLAYER_Y:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
+	If !MAP( !ADR_PLAYER + 1 ) = !WALL Or !MAP( !ADR_PLAYER + 1 ) = !DOOR_CLOSED Or !MAP( !ADR_PLAYER + 1 ) = !SWITCH_ON Or !MAP( !ADR_PLAYER + 1 ) = !SWITCH_OFF Or !MAP( !ADR_PLAYER + 1 ) = !BOX Then Goto @game_loop
 	!MOVES=0/
 	Gosub @restore_tile
 	
@@ -29,9 +29,9 @@
 	
 #label move_left
 	Eg !LEVEL_COLOR,0,0 : CursorX !PLAYER_X : CursorY !PLAYER_Y/	
-	If !MAP( !ADR_PLAYER - 1) = 41 And !MOVES=1 Then Goto @box_left
-	If !MAP( !ADR_PLAYER - 1) = 8  And !MOVES=1 Then !MAP( !ADR_PLAYER - 1) = 9 : CursorX !PLAYER_X-2 : CursorY !PLAYER_Y:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
-	If !MAP( !ADR_PLAYER - 1 ) = 1 Or !MAP( !ADR_PLAYER - 1 ) = 6 Or !MAP( !ADR_PLAYER - 1 ) = 8 Or !MAP( !ADR_PLAYER - 1 ) = 9 Or !MAP( !ADR_PLAYER - 1 ) = 41 Then Goto @game_loop
+	If !MAP( !ADR_PLAYER - 1) = !BOX And !MOVES=1 Then Goto @box_left
+	If !MAP( !ADR_PLAYER - 1) = !SWITCH_ON  And !MOVES=1 Then !MAP( !ADR_PLAYER - 1) = !SWITCH_OFF : CursorX !PLAYER_X-2 : CursorY !PLAYER_Y:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
+	If !MAP( !ADR_PLAYER - 1 ) = !WALL Or !MAP( !ADR_PLAYER - 1 ) = !DOOR_CLOSED Or !MAP( !ADR_PLAYER - 1 ) = !SWITCH_ON Or !MAP( !ADR_PLAYER - 1 ) = !SWITCH_OFF Or !MAP( !ADR_PLAYER - 1 ) = !BOX Then Goto @game_loop
 	!MOVES=0/
 	Gosub @restore_tile
 	
@@ -41,9 +41,9 @@
 
 #label move_up
 	Eg !LEVEL_COLOR,0,0 : CursorX !PLAYER_X : CursorY !PLAYER_Y/
-	If !MAP( !ADR_PLAYER - 16) = 41 And !MOVES=1 Then Goto @box_up
-	If !MAP( !ADR_PLAYER - 16) = 8 And !MOVES=1  Then !MAP( !ADR_PLAYER - 16) = 9 : CursorX !PLAYER_X : CursorY !PLAYER_Y-2:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
-	If !MAP( !ADR_PLAYER - 16 ) = 1 Or !MAP( !ADR_PLAYER - 16 ) = 6  Or !MAP( !ADR_PLAYER - 16 ) = 8 Or !MAP( !ADR_PLAYER -16 ) = 9 Or !MAP( !ADR_PLAYER - 16 ) = 41 Then Goto @game_loop
+	If !MAP( !ADR_PLAYER - 16) = !BOX And !MOVES=1 Then Goto @box_up
+	If !MAP( !ADR_PLAYER - 16) = !SWITCH_ON And !MOVES=1  Then !MAP( !ADR_PLAYER - 16) = !SWITCH_OFF : CursorX !PLAYER_X : CursorY !PLAYER_Y-2:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
+	If !MAP( !ADR_PLAYER - 16 ) = !WALL Or !MAP( !ADR_PLAYER - 16 ) = !DOOR_CLOSED  Or !MAP( !ADR_PLAYER - 16 ) = !SWITCH_ON Or !MAP( !ADR_PLAYER -16 ) = !SWITCH_OFF Or !MAP( !ADR_PLAYER - 16 ) = !BOX Then Goto @game_loop
 	!MOVES=0/
 	Gosub @restore_tile
 	
@@ -53,9 +53,9 @@
 
 #label move_down
 	Eg !LEVEL_COLOR,0,0 : CursorX !PLAYER_X : CursorY !PLAYER_Y/
-	If !MAP( !ADR_PLAYER + 16) = 41 And !MOVES=1 Then Goto @box_down
-	If !MAP( !ADR_PLAYER + 16) = 8 And !MOVES=1 Then !MAP( !ADR_PLAYER + 16) = 9 : CursorX !PLAYER_X : CursorY !PLAYER_Y+2:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
-	If !MAP( !ADR_PLAYER + 16 ) = 1 Or !MAP( !ADR_PLAYER + 16 ) = 6 Or !MAP( !ADR_PLAYER + 16 ) = 8 Or !MAP( !ADR_PLAYER + 16 ) = 9 Or !MAP( !ADR_PLAYER + 16 ) = 41 Then Goto @game_loop
+	If !MAP( !ADR_PLAYER + 16) = !BOX And !MOVES=1 Then Goto @box_down
+	If !MAP( !ADR_PLAYER + 16) = !SWITCH_ON And !MOVES=1 Then !MAP( !ADR_PLAYER + 16) = !SWITCH_OFF : CursorX !PLAYER_X : CursorY !PLAYER_Y+2:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
+	If !MAP( !ADR_PLAYER + 16 ) = !WALL Or !MAP( !ADR_PLAYER + 16 ) = !DOOR_CLOSED Or !MAP( !ADR_PLAYER + 16 ) = !SWITCH Or !MAP( !ADR_PLAYER + 16 ) = !SWITCH_OFF Or !MAP( !ADR_PLAYER + 16 ) = !BOX Then Goto @game_loop
 	!MOVES=0/
 	Gosub @restore_tile
 	
@@ -65,27 +65,27 @@
 
 #label restore_tile
 	!TILE_VALUE = !MAP( !ADR_PLAYER )
-	If !TILE_VALUE = 0 Then Print *Chr$( 111 )+*Chr$( 111 )+!BREAK$+*Chr$( 111 )+*Chr$( 111 )
-	If !TILE_VALUE = 2 Or !TILE_VALUE = 11 Then Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 )
-	If !TILE_VALUE = 3 Then Print *Chr$( 35 )+*Chr$( 36 )+!BREAK$+*Chr$( 72 )+*Chr$( 73 )
-	If !TILE_VALUE = 4 Then Print *Chr$( 37 )+*Chr$( 38 )+!BREAK$+*Chr$( 74 )+*Chr$( 75 )
-	If !TILE_VALUE = 5 Then Print *Chr$( 111 )+*Chr$( 111 )+!BREAK$+*Chr$( 111 )+*Chr$( 111 ) : !MAP( !ADR_PLAYER ) = 0
+	If !TILE_VALUE = 0 Then Print *Chr$( 111 )*+*Chr$( 111 )*+!BREAK$*+*Chr$( 111 )*+*Chr$( 111 )
+	If !TILE_VALUE = !GROUND Or !TILE_VALUE = 11 Then Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 )
+	If !TILE_VALUE = !ELEVATOR Then Print *Chr$( 35 )*+*Chr$( 36 )*+!BREAK$*+*Chr$( 72 )*+*Chr$( 73 )
+	If !TILE_VALUE = !TELEPORTER Then Print *Chr$( 37 )*+*Chr$( 38 )*+!BREAK$*+*Chr$( 74 )*+*Chr$( 75 )
+	If !TILE_VALUE = !BROKEN Then Print *Chr$( 111 )*+*Chr$( 111 )*+!BREAK$*+*Chr$( 111 )*+*Chr$( 111 ) : !MAP( !ADR_PLAYER ) = 0
 
 	Return
 	
 #label update_tile
 	Sound 15,1,7 : !TILE_VALUE = !MAP( !ADR_PLAYER )
 
-	If !TILE_VALUE = 0 Then Print *Chr$( 48 )+*Chr$( 49 )+!BREAK$+*Chr$( 86 )+*Chr$( 87 ) : Goto @perd_vie
-	If !TILE_VALUE = 2 Then Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 )
-	If !TILE_VALUE = 3 Then Print *Chr$( 52 )+*Chr$( 53 )+!BREAK$+*Chr$( 90 )+*Chr$( 91 ) : Goto @elevator
-	If !TILE_VALUE = 4 Then Print *Chr$( 54 )+*Chr$( 55 )+!BREAK$+*Chr$( 92 )+*Chr$( 93 ) : Goto @teleport
-	If !TILE_VALUE = 5 Then Print *Chr$( 56 )+*Chr$( 57 )+!BREAK$+*Chr$( 94 )+Chr$( 95 )
-	If !TILE_VALUE = 16 Then Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 ) : !MAP( !ADR_PLAYER ) = 2 : Gosub @take_star : Goto @game_loop
-	If !TILE_VALUE = 18 Then Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 ) : !MAP( !ADR_PLAYER ) = 2 : Gosub @take_key : Goto @game_loop
-	If !TILE_VALUE = 20 Then Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 ) : Play"T10O1AD25" : !MAP( !ADR_PLAYER ) = 2 : !NUM_BOMB = !NUM_BOMB + 1 : Goto @game_loop
-	If !TILE_VALUE = 7 Then Print *Chr$( 54 )+*Chr$( 55 )+!BREAK$+*Chr$( 92 )+*Chr$( 93 ) : Goto @fin_niveau
-	If !TILE_VALUE = 21 Or MV=22 Then Eg !LEVEL_COLOR,0,7 : Print *Chr$( 48 )+*Chr$( 49 )+!BREAK$+*Chr$( 86 )+*Chr$( 87 ) : Goto @perd_vie
+	If !TILE_VALUE = 0 Then Print *Chr$( 48 )*+*Chr$( 49 )+!BREAK$*+*Chr$( 86 )*+*Chr$( 87 ) : Goto @perd_vie
+	If !TILE_VALUE = !GROUND Then Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 )
+	If !TILE_VALUE = !ELEVATOR Then Print *Chr$( 52 )*+*Chr$( 53 )*+!BREAK$*+*Chr$( 90 )*+*Chr$( 91 ) : Goto @elevator
+	If !TILE_VALUE = !TELEPORTER Then Print *Chr$( 54 )*+*Chr$( 55 )*+!BREAK$*+*Chr$( 92 )*+*Chr$( 93 ) : Goto @teleport
+	If !TILE_VALUE = !BROKEN Then Print *Chr$( 56 )*+*Chr$( 57 )*+!BREAK$*+*Chr$( 94 )*+*Chr$( 95 )
+	If !TILE_VALUE = !STAR_GROUND Then Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 ) : !MAP( !ADR_PLAYER ) = 2 : Gosub @take_star : Goto @game_loop
+	If !TILE_VALUE = !KEY_GROUND Then Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 ) : !MAP( !ADR_PLAYER ) = 2 : Gosub @take_key : Goto @game_loop
+	If !TILE_VALUE = !BOMB_GROUND Then Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 ) : Play"T10O1AD25" : !MAP( !ADR_PLAYER ) = 2 : !NUM_BOMB = !NUM_BOMB + 1 : Goto @game_loop
+	If !TILE_VALUE = !DOOR_OPENED Then Print *Chr$( 54 )*+*Chr$( 55 )*+!BREAK$*+*Chr$( 92 )*+*Chr$( 93 ) : Goto @fin_niveau
+	If !TILE_VALUE = !LASERH Or !TILE_VALUE=!LASERV Then Eg !LEVEL_COLOR,0,7 : Print *Chr$( 48 )*+*Chr$( 49 )*+!BREAK$*+*Chr$( 86 )*+*Chr$( 87 ) : Goto @perd_vie
 
 	Display 2/
 	Return
@@ -101,7 +101,7 @@
 	Return
 
 #label open_door
-	Eg !LEVEL_COLOR,0,0 : !MAP( !ADR_DOOR ) = 7 : CursorX !DOOR_X : CursorY !DOOR_Y
+	Eg !LEVEL_COLOR,0,0 : !MAP( !ADR_DOOR ) = !DOOR_OPENED : CursorX !DOOR_X : CursorY !DOOR_Y
 	Print Chr$( 43 )+Chr$( 44 )+!BREAK$+Chr$( 80 )+Chr$( 81 );/
 	Display 5 : Play "T5O2ABCDEFGGG"/
 	!NUM_KEY=-1 : !NUM_STAR=-1 : Return
@@ -109,11 +109,11 @@
 #label teleport
 	
 	!TELEPORT_VALUE=1/
-	CursorX !PLAYER_X : CursorY !PLAYER_Y : Print *Chr$( 37 )+*Chr$( 38 )+!BREAK$+*Chr$( 74 )+*Chr$( 75 )/
+	CursorX !PLAYER_X : CursorY !PLAYER_Y : Print *Chr$( 37 )*+*Chr$( 38 )*+!BREAK$*+*Chr$( 74 )*+*Chr$( 75 )/
 	Play "T10O3G4"
 	If !PLAYER_X = !TELEPORT( 1 ) And !PLAYER_Y = !TELEPORT( 2 ) Then !TELEPORT_VALUE = 4
 	!PLAYER_X = !TELEPORT( !TELEPORT_VALUE ) : !PLAYER_Y = !TELEPORT( !TELEPORT_VALUE + 1 ) : !ADR_PLAYER = !TELEPORT( !TELEPORT_VALUE + 2 )/
-	CursorX !PLAYER_X : CursorY !PLAYER_Y : Print *Chr$( 54 )+*Chr$( 55 )+!BREAK$+*Chr$( 92 )+*Chr$( 93 ):goto @game_loop		
+	CursorX !PLAYER_X : CursorY !PLAYER_Y : Print *Chr$( 54 )*+*Chr$( 55 )*+!BREAK$*+*Chr$( 92 )*+*Chr$( 93 ):goto @game_loop		
 
 #label elevator
 	
@@ -128,7 +128,7 @@
 	!PLAYER_X = !PLAYER_X - 2 : !ADR_PLAYER = !ADR_PLAYER - 1/
 	Gosub @update_elevator/
 	!MAP( !ADR_PLAYER + 1 ) = 0	
-	CursorX !PLAYER_X + 2 : CursorY !PLAYER_Y : Print *Chr$( 111 )+*Chr$( 111 )+!BREAK$+*Chr$( 111 )+*Chr$( 111 )/	
+	CursorX !PLAYER_X + 2 : CursorY !PLAYER_Y : Print *Chr$( 111 )*+*Chr$( 111 )*+!BREAK$*+*Chr$( 111 )*+*Chr$( 111 )/	
 	Display 5 : Goto @left_elevator
 	
 #label right_elevator
@@ -136,7 +136,7 @@
 	!PLAYER_X = !PLAYER_X + 2 : !ADR_PLAYER = !ADR_PLAYER + 1
 	Gosub @update_elevator/
 	!MAP( !ADR_PLAYER - 1 ) = 0	/
-	CursorX !PLAYER_X - 2 : CursorY !PLAYER_Y : Print *Chr$( 111 )+*Chr$( 111 )+!BREAK$+*Chr$( 111 )+*Chr$( 111 )/	
+	CursorX !PLAYER_X - 2 : CursorY !PLAYER_Y : Print *Chr$( 111 )*+*Chr$( 111 )*+!BREAK$*+*Chr$( 111 )*+*Chr$( 111 )/	
 	Display 2 : Goto @right_elevator
 	
 #label up_elevator
@@ -144,7 +144,7 @@
 	!PLAYER_Y = !PLAYER_Y - 2 : !ADR_PLAYER = !ADR_PLAYER - 16/
 	Gosub @update_elevator/
 	!MAP( !ADR_PLAYER + 16 ) = 0/	
-	CursorX !PLAYER_X : CursorY !PLAYER_Y + 2 : Print *Chr$( 111 )+*Chr$( 111 )+!BREAK$+*Chr$( 111 )+*Chr$( 111 )/	
+	CursorX !PLAYER_X : CursorY !PLAYER_Y + 2 : Print *Chr$( 111 )*+*Chr$( 111 )*+!BREAK$*+*Chr$( 111 )*+*Chr$( 111 )/	
 	Display 5 : Goto @up_elevator
 
 #label down_elevator
@@ -152,11 +152,11 @@
 	!PLAYER_Y = !PLAYER_Y + 2 : !ADR_PLAYER = !ADR_PLAYER + 16/
 	Gosub @update_elevator/
 	!MAP( !ADR_PLAYER - 16 ) = 0 /
-	CursorX !PLAYER_X : CursorY !PLAYER_Y - 2 : Print *Chr$( 111 )+*Chr$( 111 )+!BREAK$+*Chr$( 111 )+*Chr$( 111 )/
+	CursorX !PLAYER_X : CursorY !PLAYER_Y - 2 : Print *Chr$( 111 )*+*Chr$( 111 )*+!BREAK$*+*Chr$( 111 )*+*Chr$( 111 )/
 	Display 5 : Goto @down_elevator
 
 #label update_elevator
-	CursorX !PLAYER_X : CursorY !PLAYER_Y : Print *Chr$( 52 )+*Chr$( 53 )+!BREAK$+*Chr$( 90 )+*Chr$( 91 )/
+	CursorX !PLAYER_X : CursorY !PLAYER_Y : Print *Chr$( 52 )*+*Chr$( 53 )*+!BREAK$*+*Chr$( 90 )*+*Chr$( 91 )/
 	!MAP( !ADR_PLAYER ) = 3/
 	Play "T1A7"/
 	Return
@@ -170,58 +170,58 @@
 	Display 5 : goto @game_loop
 
 #label up_boom
-	If !MAP( !ADR_PLAYER-16 ) = 1 Then !MAP( !ADR_PLAYER-16 ) = 2 :  CursorX !PLAYER_X : CursorY !PLAYER_Y - 2 : Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );
+	If !MAP( !ADR_PLAYER-16 ) = !WALL Then !MAP( !ADR_PLAYER-16 ) = !GROUND :  CursorX !PLAYER_X : CursorY !PLAYER_Y - 2 : Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );
 	Return
 
 #label down_boom
-	If !MAP( !ADR_PLAYER+16 ) = 1 Then !MAP( !ADR_PLAYER+16 ) = 2 :  CursorX !PLAYER_X : CursorY !PLAYER_Y + 2 : Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );
+	If !MAP( !ADR_PLAYER+16 ) = !WALL Then !MAP( !ADR_PLAYER+16 ) = !GROUND :  CursorX !PLAYER_X : CursorY !PLAYER_Y + 2 : Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );
 	Return
 	
 #label left_boom
-	If !MAP( !ADR_PLAYER-1 ) = 1 Then !MAP( !ADR_PLAYER-1 ) = 2 :  CursorX !PLAYER_X - 2 : CursorY !PLAYER_Y : Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );
+	If !MAP( !ADR_PLAYER-1 ) = !WALL Then !MAP( !ADR_PLAYER-1 ) = !GROUND :  CursorX !PLAYER_X - 2 : CursorY !PLAYER_Y : Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );
 	Return
 
 #label right_boom
-	If !MAP( !ADR_PLAYER+1 ) = 1 Then !MAP( !ADR_PLAYER+1 ) = 2 :  CursorX !PLAYER_X + 2 : CursorY !PLAYER_Y:Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );
+	If !MAP( !ADR_PLAYER+1 ) = !WALL Then !MAP( !ADR_PLAYER+1 ) = !GROUND :  CursorX !PLAYER_X + 2 : CursorY !PLAYER_Y:Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );
 	Return
 
 #label box_up
-	If !PLAYER_Y=2 Or ( !MAP( !ADR_PLAYER - 32 )<> 2 And !MAP( !ADR_PLAYER - 32 )<> 3 ) Then Goto @game_loop
+	If !PLAYER_Y=2 Or ( !MAP( !ADR_PLAYER - 32 )<> !GROUND And !MAP( !ADR_PLAYER - 32 )<> !MABOOL_GROUND ) Then Goto @game_loop
 	Sound 10,10,7/
-	!MAP( !ADR_PLAYER - 16 ) = 2 : !MAP( !ADR_PLAYER - 32 ) = 41/
+	!MAP( !ADR_PLAYER - 16 ) = !GROUND : !MAP( !ADR_PLAYER - 32 ) = !BOX/
 	Gosub @restore_tile
-	CursorX !PLAYER_X : CursorY !PLAYER_Y - 2 : Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 )
-	CursorX !PLAYER_X : CursorY !PLAYER_Y - 4 : Print *Chr$( 112 )+*Chr$( 113 )+!BREAK$+*Chr$( 116 )+*Chr$( 117 )
+	CursorX !PLAYER_X : CursorY !PLAYER_Y - 2 : Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 )
+	CursorX !PLAYER_X : CursorY !PLAYER_Y - 4 : Print *Chr$( 112 )*+*Chr$( 113 )*+!BREAK$*+*Chr$( 116 )*+*Chr$( 117 )
 	!PLAYER_Y = !PLAYER_Y - 2 : CursorX !PLAYER_X : CursorY !PLAYER_Y : !ADR_PLAYER = !ADR_PLAYER - 16 : Gosub @update_tile/
 	Goto @game_loop
 
 #label box_down
-	If !PLAYER_Y=20 Or ( !MAP( !ADR_PLAYER + 32 )<> 2 And !MAP( !ADR_PLAYER + 32 )<> 3 ) Then Goto @game_loop
+	If !PLAYER_Y=20 Or ( !MAP( !ADR_PLAYER + 32 )<> !GROUND And !MAP( !ADR_PLAYER + 32 )<> !MABOOL_GROUND ) Then Goto @game_loop
 	Sound 10,10,7/
-	!MAP( !ADR_PLAYER + 16 ) = 2 : !MAP( !ADR_PLAYER + 32 ) = 41/
+	!MAP( !ADR_PLAYER + 16 ) = !GROUND : !MAP( !ADR_PLAYER + 32 ) = !BOX/
 	Gosub @restore_tile
-	CursorX !PLAYER_X : CursorY !PLAYER_Y + 2 : Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 )
-	CursorX !PLAYER_X : CursorY !PLAYER_Y + 4 : Print *Chr$( 112 )+*Chr$( 113 )+!BREAK$+*Chr$( 116 )+*Chr$( 117 )
+	CursorX !PLAYER_X : CursorY !PLAYER_Y + 2 : Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 )
+	CursorX !PLAYER_X : CursorY !PLAYER_Y + 4 : Print *Chr$( 112 )*+*Chr$( 113 )*+!BREAK$*+*Chr$( 116 )*+*Chr$( 117 )
 	!PLAYER_Y = !PLAYER_Y + 2 : CursorX !PLAYER_X : CursorY !PLAYER_Y : !ADR_PLAYER = !ADR_PLAYER + 16 : Gosub @update_tile/
 	Goto @game_loop
 
 #label box_left
-	If !PLAYER_X=4 Or ( !MAP( !ADR_PLAYER - 2 )<> 2 And !MAP( !ADR_PLAYER - 2 )<> 3 ) Then Goto @game_loop
+	If !PLAYER_X=4 Or ( !MAP( !ADR_PLAYER - 2 )<> !GROUND And !MAP( !ADR_PLAYER - 2 )<> !MABOOL_GROUND ) Then Goto @game_loop
 	Sound 10,10,7/
-	!MAP( !ADR_PLAYER - 1 ) = 2 : !MAP( !ADR_PLAYER - 2 ) = 41/
+	!MAP( !ADR_PLAYER - 1 ) = !GROUND : !MAP( !ADR_PLAYER - 2 ) = !BOX/
 	Gosub @restore_tile
-	CursorX !PLAYER_X - 2 : CursorY !PLAYER_Y : Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 )
-	CursorX !PLAYER_X - 4 : CursorY !PLAYER_Y : Print *Chr$( 112 )+*Chr$( 113 )+!BREAK$+*Chr$( 116 )+*Chr$( 117 )
+	CursorX !PLAYER_X - 2 : CursorY !PLAYER_Y : Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 )
+	CursorX !PLAYER_X - 4 : CursorY !PLAYER_Y : Print *Chr$( 112 )*+*Chr$( 113 )*+!BREAK$*+*Chr$( 116 )*+*Chr$( 117 )
 	!PLAYER_X = !PLAYER_X - 2 : CursorX !PLAYER_X : CursorY !PLAYER_Y : !ADR_PLAYER = !ADR_PLAYER - 1 : Gosub @update_tile/
 	Goto @game_loop
 
 #label box_right
-	If !PLAYER_X=32 Or ( !MAP( !ADR_PLAYER + 2 )<> 2 And !MAP( !ADR_PLAYER + 2 )<> 3 ) Then Goto @game_loop
+	If !PLAYER_X=32 Or ( !MAP( !ADR_PLAYER + 2 )<> !GROUND And !MAP( !ADR_PLAYER + 2 )<> !MABOOL_GROUND ) Then Goto @game_loop
 	Sound 10,10,7/
-	!MAP( !ADR_PLAYER + 1 ) = 11:!MAP( !ADR_PLAYER + 2 ) = 41/
+	!MAP( !ADR_PLAYER + 1 ) = !GROUND:!MAP( !ADR_PLAYER + 2 ) = !BOX/
 	Gosub @restore_tile
-	CursorX !PLAYER_X + 2 : CursorY !PLAYER_Y : Print *Chr$( 50 )+*Chr$( 51 )+!BREAK$+*Chr$( 88 )+*Chr$( 89 )
-	CursorX !PLAYER_X + 4 : CursorY !PLAYER_Y : Print *Chr$( 112 )+*Chr$( 113 )+!BREAK$+*Chr$( 116 )+*Chr$( 117 )
+	CursorX !PLAYER_X + 2 : CursorY !PLAYER_Y : Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 )
+	CursorX !PLAYER_X + 4 : CursorY !PLAYER_Y : Print *Chr$( 112 )*+*Chr$( 113 )*+!BREAK$*+*Chr$( 116 )*+*Chr$( 117 )
 	!PLAYER_X = !PLAYER_X + 2 : CursorX !PLAYER_X : CursorY !PLAYER_Y : !ADR_PLAYER = !ADR_PLAYER + 1 : Gosub @update_tile/
 	Goto @game_loop
 	
@@ -229,19 +229,19 @@
 	Et 7,0,0 : CursorX 5 : CursorY 24/
 	!TXT1$ = Mid$( Str$( !SCORE ), 2, Len( Str$( !SCORE ) ) - 1 )
 	If Len( !TXT1$ ) < 6 Then For !FOR_VAR = Len( !TXT1$ ) To 6 : !TXT1$ = "0" + !TXT1$ : Next !FOR_VAR
-	Print "SCORE_" + !TXT1$;/
+	Print "SCORE_" *+ !TXT1$;/
 	!TXT1$ = Mid$( Str$( !LEVEL ), 2, Len( Str$( !LEVEL ) ) - 1 )
 	If Len( !TXT1$ ) < 2 Then !TXT1$ = "0" + !TXT1$
-	Print "_STAGE_" + !TXT1$;/
+	Print "_STAGE_" *+ !TXT1$;/
 	!TXT1$ = Mid$( Str$( !LIVES ), 2, Len( Str$( !LIVES ) ) - 1 )
 	If Len( !TXT1$ ) < 2 Then !TXT1$ = "0" + !TXT1$ 
-	Print "_LIVES_" + !TXT1$;/
+	Print "_LIVES_" *+ !TXT1$;/
 	!TXT1$=""/
 	Return
 
 #label disable_laser
 	For !FOR_VAR = 1 To !NUM_LASER/
-		!MAP( !LASER( !FOR_VAR ) ) = 2/
+		!MAP( !LASER( !FOR_VAR ) ) = !GROUND/
 		Eg !LEVEL_COLOR,0,0 : CursorX !LASER_X( !FOR_VAR ) : CursorY !LASER_Y( !FOR_VAR ) : Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 );/
 		Display5
 	Next !FOR_VAR

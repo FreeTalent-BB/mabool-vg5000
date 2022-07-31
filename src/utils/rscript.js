@@ -13,6 +13,9 @@ var labels = [];
 var labelNames = {};
 var vars = [];
 var varNames = {};
+var constants = [];
+var constNames = {};
+
 var compress = false;
 var code = '';
 var lines = [];
@@ -60,7 +63,7 @@ exports.rscript = rscript;
 var myArgs = [];
 if( PATH.basename( process.argv[ 1 ] ).toLowerCase() == 'rscript.js' )
 {
-	console.log( 'RSCRIPT v1.0-3 by Baptiste Bideaux' );
+	console.log( 'RSCRIPT v1.0-4 by Baptiste Bideaux' );
 	console.log( '----------------------------------' ); 
 	console.log( '' );
 
@@ -166,13 +169,9 @@ function finalizeCode()
 			}
 			
 		}
-		code = code.strReplace( '"+"', '' );
-		code = code.strReplace( '" + "', '' );
-		
-//		code = code.strReplace( '"+', '"' );
-//		code = code.strReplace( '" +', '"' );
-//		code = code.strReplace( '$+"', '$"' );
-//		code = code.strReplace( '$ + "', '$"' );
+		code = code.strReplace( '*+', '' );
+		code = code.strReplace( ' *+', '' );
+		code = code.strReplace( '""', '' );
 	}
 	
 	// Verifie le code
@@ -235,6 +234,13 @@ function generateCode()
 				line = line.strReplace( '!' + vars[ v ], varNames[ vars[ v ] ].toUpperCase() );
 				line = line.strReplace( '!' + vars[ v ].toUpperCase(), varNames[ vars[ v ] ].toUpperCase() );	
 				line = line.strReplace( '!' + vars[ v ].toLowerCase(), varNames[ vars[ v ] ].toUpperCase() );
+			}
+
+			for( var v = 0; v < constants.length; v++ )
+			{
+				line = line.strReplace( '!' + constants[ v ], constNames[ constants[ v ] ].value );
+				line = line.strReplace( '!' + constants[ v ].toUpperCase(), constNames[ constants[ v ] ].value );	
+				line = line.strReplace( '!' + constants[ v ].toLowerCase(), constNames[ constants[ v ] ].value );
 			}
 			
 			if( line.substring( line.length - 1, line.length ) == '/' )
@@ -443,7 +449,34 @@ function transpileFile( file, cb )
 				varNames[ part[ 1 ] ] = name;
 				line='';
 			}
+            
+			if( line.substring( 0, 7 ).toLowerCase() == "#const " )
+            {
+                var part = line.split( " " );
+                if( part.length < 2 )
+                {
+                    console.log( 'ERROR: Constant name undefined at line ' + ( l + 1 ) + ' in ' + file );
+                    return false;                    
+                }
 
+				var values = part[1].split('=');
+				if( values.length < 2 )
+				{
+                    console.log( 'ERROR: Constant value undefined at line ' + ( l + 1 ) + ' in ' + file );
+                    return false;
+				}
+				
+                if( constNames[ values[0].trim() ] )
+                {
+                    console.log( 'ERROR: Constant name already exists at line ' + ( l + 1 ) + ' in ' + file );
+                    return false;                      
+                }
+				
+				constants.push( values[0].trim() );
+				constNames[ values[0].trim() ] = { value: values[1].trim() };
+				line='';
+			}
+			
 			if( line != '' )
 			{
                 lines.push( line );
