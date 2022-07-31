@@ -169,9 +169,10 @@ function finalizeCode()
 			}
 			
 		}
-		code = code.strReplace( '*+', '' );
-		code = code.strReplace( ' *+', '' );
-		code = code.strReplace( '""', '' );
+		code = code.strReplace( '*+', '|' );
+		code = code.strReplace( ' *+', '|' );
+		code = code.strReplace( '"|"', '' );
+		code = code.strReplace( '|', '' );
 	}
 	
 	// Verifie le code

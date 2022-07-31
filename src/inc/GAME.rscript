@@ -55,7 +55,7 @@
 	Eg !LEVEL_COLOR,0,0 : CursorX !PLAYER_X : CursorY !PLAYER_Y/
 	If !MAP( !ADR_PLAYER + 16) = !BOX And !MOVES=1 Then Goto @box_down
 	If !MAP( !ADR_PLAYER + 16) = !SWITCH_ON And !MOVES=1 Then !MAP( !ADR_PLAYER + 16) = !SWITCH_OFF : CursorX !PLAYER_X : CursorY !PLAYER_Y+2:Print Chr$( 43 )+Chr$( 47 )+!BREAK$+Chr$( 84 )+Chr$( 85 );:Gosub @disable_laser : Goto @game_loop
-	If !MAP( !ADR_PLAYER + 16 ) = !WALL Or !MAP( !ADR_PLAYER + 16 ) = !DOOR_CLOSED Or !MAP( !ADR_PLAYER + 16 ) = !SWITCH Or !MAP( !ADR_PLAYER + 16 ) = !SWITCH_OFF Or !MAP( !ADR_PLAYER + 16 ) = !BOX Then Goto @game_loop
+	If !MAP( !ADR_PLAYER + 16 ) = !WALL Or !MAP( !ADR_PLAYER + 16 ) = !DOOR_CLOSED Or !MAP( !ADR_PLAYER + 16 ) = !SWITCH_ON Or !MAP( !ADR_PLAYER + 16 ) = !SWITCH_OFF Or !MAP( !ADR_PLAYER + 16 ) = !BOX Then Goto @game_loop
 	!MOVES=0/
 	Gosub @restore_tile
 	
@@ -285,4 +285,49 @@
 	For !FOR_VAR=1 To 5000:Next !FOR_VAR/
 	!LEVEL=1:!LEVEL_COLOR=1:!LIVES=4:!SCORE=0/
 	Goto @main_start
+;#label tile_empty
+;  Print *Chr$( 111 )+*Chr$( 111 )*+!BREAK$*+*Chr$( 111 )*+*Chr$( 111 ) : Goto @next_tile
+
+;1
+#label tile_wall
+	Print *Chr$( 32 )*+*Chr$( 33 )*+!BREAK$*+*Chr$( 70 )*+*Chr$( 71 ) : Goto @next_tile
+;2
+#label tile_ground
+	Print Chr$( 34 )+Chr$( 34 )+!BREAK$+Chr$( 34 )+Chr$( 34 ) : Goto @next_tile
+;3
+#label tile_elevator
+	Print *Chr$( 35 )*+*Chr$( 36 )*+!BREAK$*+*Chr$( 72 )*+*Chr$( 73 ) : Goto @next_tile
+;4
+#label tile_teleporter
+	Print *Chr$( 37 )*+*Chr$( 38 )*+!BREAK$*+*Chr$( 74 )*+*Chr$( 75 ) : !TELEPORT( !NUM_TELEPORTER ) = !MAP_X : !TELEPORT( !NUM_TELEPORTER + 1 ) = !MAP_Y : !TELEPORT( !NUM_TELEPORTER + 2 ) = !MAP_POS : !NUM_TELEPORTER = !NUM_TELEPORTER + 3 : Goto @next_tile
+;5 
+#label tile_broken
+	Print *Chr$( 39 )*+*Chr$( 40 )*+!BREAK$*+*Chr$( 76 )*+*Chr$( 77 ) : Goto @next_tile
+;6	
+#label tile_door_closed
+	Print *Chr$( 41 )*+*Chr$( 42 )*+!BREAK$*+*Chr$( 78 )*+*Chr$( 79 ) : !DOOR_X = !MAP_X : !DOOR_Y = !MAP_Y : !ADR_DOOR = !MAP_POS : Goto @next_tile
+;7
+#label tile_switch_on
+	Print *Chr$( 45 )*+*Chr$( 46 )*+!BREAK$*+*Chr$( 82 )*+*Chr$( 83 ) : Goto @next_tile
+;8
+#label tile_mabool_ground
+	Print *Chr$( 50 )*+*Chr$( 51 )*+!BREAK$*+*Chr$( 88 )*+*Chr$( 89 ) : !PLAYER_X = !MAP_X : !PLAYER_Y = !MAP_Y : !ADR_PLAYER = !MAP_POS : !MAP(!ADR_PLAYER) = 2:Goto @next_tile
+;9 
+#label tile_star_ground
+	Print *Chr$( 60 )*+*Chr$( 61 )*+!BREAK$*+*Chr$( 98 )*+*Chr$( 99 ) : !NUM_STAR = !NUM_STAR + 1 : Goto @next_tile
+;10
+#label tile_key_ground
+	Print *Chr$( 64 )*+*Chr$( 65 )*+!BREAK$*+*Chr$( 102 )*+*Chr$( 103 ) : !NUM_KEY = !NUM_KEY + 1 : Goto @next_tile
+;11
+#label tile_bomb_ground
+	Print *Chr$( 68 )*+*Chr$( 69 )*+!BREAK$*+*Chr$( 106 )*+*Chr$( 107 ) : Goto @next_tile
+;12
+#label tile_laserh
+	Print *Chr$( 108 )*+*Chr$( 109 )*+!BREAK$+*Chr$( 108 )*+*Chr$( 109 ) : !NUM_LASER = !NUM_LASER + 1 : !LASER(!NUM_LASER)=!MAP_POS : !LASER_X(!NUM_LASER)=!MAP_X:!LASER_Y(!NUM_LASER)=!MAP_Y:Goto @next_tile
+;13 
+#label tile_laserv
+	Print *Chr$( 110 )*+*Chr$( 110 )*+!BREAK$*+*Chr$( 114 )*+*Chr$( 114 ) : !NUM_LASER = !NUM_LASER + 1 : !LASER(!NUM_LASER)=!MAP_POS : !LASER_X(!NUM_LASER)=!MAP_X:!LASER_Y(!NUM_LASER)=!MAP_Y:Goto @next_tile
+;14	
+#label tile_box
+	Print *Chr$( 112 )*+*Chr$( 113 )*+!BREAK$*+*Chr$( 116 )*+*Chr$( 117 ) : Goto @next_tile
 	
