@@ -1,14 +1,33 @@
-# Mabool for Thomson Computers (MOS & TO7/70)
-Here, the tape image in K7 Format for the DCMOTO Emulator. To launch the game, type RUN"MABOOL" and ENTER.
-Find the DCMOTO emulator here: http://dcmoto.free.fr/emulateur/index.html
+# Mabool for VG5000µ Computers
+Here, the tape image in K7 Format for the DGVG5K Emulator. To launch the game, type CLOAD"MABOOL" and ENTER.
+Find the DGVG5K emulator here: http://dcvg5k.free.fr/
 
-<img src="https://user-images.githubusercontent.com/11832290/182225021-59e86036-4641-4baa-87e4-0dc2f3399426.png" style="width:25vw">
+<img src="https://user-images.githubusercontent.com/11832290/182317545-a87bd54f-24db-48b3-87b8-8538f67451a8.png" style="width:25vw">
 
-Release 1 (August 1, 2022): 
+Release 4 (August 1, 2022): 
+-------------------------
+- Fixes R3 bugs
+  - broken ground
+  - door
+  - laser switch
+  - some levels correction
+- BASIC Code optimized & compressed!
+
+Release 3 (July 31, 2022): 
+-------------------------
+- Joystick Tester
+- Drawing level optimization 
+- BASIC Code optimized
+
+Release 2 (July 28, 2022): 
+-------------------------
+- BASIC Code optimized
+
+Release 1 (July 27, 2022): 
 -------------------------
 - Title
 - 16 stages
-- Keyboard controls
+- Keyboard and Joystick 1 controls
 - BASIC Code optimized & compressed!
 - Features:
   - Star
@@ -20,6 +39,6 @@ Release 1 (August 1, 2022):
   - Horizontal and vertical Lasers
   - Bomb
   - Laser Switch
-- Game Over Screen + Final score
-- Congratulations Screen + Final score
+- Game Over Screen
+- Congratulations Screen
 - Automatic Restart game after Game Over/Congratulations
