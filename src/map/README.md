@@ -1,4 +1,4 @@
-# Mabool for Thomson Computers(MO5 & TO7/70)
+# Mabool for VG5000µ
 
 Map files used by the Map editor "TILED" that you can find here : https://www.mapeditor.org/
 
