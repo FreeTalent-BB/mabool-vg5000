@@ -12,3 +12,4 @@
 
 Mabool is a retro game coded with the old Basic language, provided on the old VG5000µ Computers.
 
+NOTE: A version for 8bits Thomson computers (MO5 & TO7-70) is available here: https://github.com/FreeTalent-BB/mabool-thomson
