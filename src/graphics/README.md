@@ -3,7 +3,7 @@
 Here you can find all the graphic resources useful for the development of the game.
 
 <b>sprites.png</b><br>
-Set of tiles of the game which will be transformed into BASIC code to generate the user characters of the game ( EG ). Each tile has a size of 16 x 20px or 2x2 characters. <b>This file is necessary to make the game.</b>
+Set of tiles of the game which will be transformed into BASIC code to generate the user characters of the game ( EG ). Each tile has a size of 16x20px or 2x2 characters. <b>This file is necessary to make the game.</b>
 
 <b>sprites.xcf</b><br>
 Set of tiles of the game for GIMP.</b>
