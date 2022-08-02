@@ -1,4 +1,4 @@
-# Mabool for Thomson Computers(MO5 & TO7/70)
+# Mabool for VG5000µ
 
 The RSCRIPT sources needed to build the final program. They are included by the <b>main.rscript</b> file which is at the root of the "src" folder.
 
@@ -13,6 +13,9 @@ Code for Map datas generated from the build batch script.
 
 <b>SPRITES.rscript</b><br>
 Code for User characters datas generated from the build batch script.
+
+<b>FONT.rscript</b><br>
+Code for font datas generated from the build batch script.
 
 <b>TITLE.rscript</b><br>
 Mabool Title script. 
