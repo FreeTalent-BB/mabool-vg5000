@@ -1,20 +1,14 @@
-# Mabool for Thomson Computers (MO5 & TO7-70)
+# Mabool for VG5000µ
 <table style="position:relative; width:50vw; margin-left:auto; margin-right: auto;border: none;">
 <tr>
 <td width="50%">
-<img src="https://user-images.githubusercontent.com/11832290/182209818-ee2c1893-b31e-41f7-8ade-800611060591.png" style="position:relative;width:25vw;display:inline-block">
+<img src="https://user-images.githubusercontent.com/11832290/182314763-c4653211-7cd7-4c99-879a-bcfeecc2ad2b.png" style="position:relative;width:25vw;display:inline-block">
 </td>
 <td width="50%">
-<img src="https://user-images.githubusercontent.com/11832290/182210624-89870ca2-00d4-422b-a906-6ff52c59ea59.png" style="position:relative;width:25vw;display:inline-block">
+<img src="https://user-images.githubusercontent.com/11832290/182314911-33e9c7f4-33f3-4c5e-b216-9b63f2753979.png" style="position:relative;width:25vw;display:inline-block">
 </td>
 </tr>
 </table>
 
-Mabool is a retro game coded with the old Microsoft Basic 1.0, provided on the old Thomson 8 bits Computers.
-It's work on these machines:
-- MO5
-- MO6
-- TO7
-- TO7/70
+Mabool is a retro game coded with the old Basic language, provided on the old VG5000µ Computers.
 
-It can probably work on other Thomson machines of the time (TO8, TO9...). But this has not been tested.
