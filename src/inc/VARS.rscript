@@ -32,6 +32,7 @@
 #var num_tiles 
 #var for_var
 #var column
+#var new_life
 
 #const c_wall=1
 #const c_ground=2
@@ -59,4 +60,4 @@ Clear 350 : Dim !MAP( 160 ) : Dim !TELEPORT( 6 ) : Dim !LASER_X(20),!LASER_Y(20)
 !LEVEL_COLOR = 1 : !LEVEL = 1/
 !ADR_PLAYER = 0: !PLAYER_X = 0 : !PLAYER_Y = 0
 !SCORE = 0 : !LIVES = 4 : !ADR_DOOR = 0 : !DOOR_X = 0 : !DOOR_Y = 0/ 
-!NUM_STAR = 0 : !NUM_KEY = 0 : !NUM_BOMB = 0 :!NUM_LASER = 0
+!NUM_STAR = 0 : !NUM_KEY = 0 : !NUM_BOMB = 0 :!NUM_LASER = 0 : !NEW_LIFE=0

@@ -44,6 +44,8 @@
 ;
 #label show_level
 	!MAP_X = 4 : !MAP_Y = 2 : !NUM_STAR = 0 : !NUM_KEY = 0 : !MAP_POS = 1 : !ADR_DOOR = 0 : !ADR_PLAYER = 0 : !NUM_TELEPORTER = 1
+	Et 7,0,0 : CursorX 12 : CursorY 24/
+	Print "LOADING_STAGE...";/
 #label draw_line1
 	!COLUMN = 1
 		
@@ -57,9 +59,6 @@
 
 #label next_tile
 	!MAP_X = !MAP_X + 2 : !MAP_POS = !MAP_POS + 1/
-
-	Et 7,0,0 : CursorX 10 : CursorY 24/
-	Print "LOADING_STAGE..."*+ Str$( Int( 100 / 160 * !MAP_POS ) )*+ "_%";/
 	!COLUMN = !COLUMN + 1
 	If !COLUMN = 17 Then !MAP_Y = !MAP_Y + 2 : !MAP_X = 4 : !COLUMN=1
 	If !MAP_POS < 160 Then Goto @draw_line2

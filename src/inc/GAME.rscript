@@ -256,6 +256,14 @@
 	If !LIVES = 0 Then Goto @game_over 
 	goto @main_start
 
+#label gagne_vie
+	Tx 7,0,0 : CursorX 0 : CursorY 24 : Print SPC(39);/
+	Et 2,0,0 : CursorX 15 : CursorY 24 : Print "EXTRA_LIFE!";/
+	Display 5 : !NEW_LIFE = 0
+	!LIVES = !LIVES + 1 : Play "T10O3AAAD+50"/
+	For !FOR_VAR = 1 To 10 : Next !FOR_VAR/
+	goto @main_start
+
 #label fin_niveau
 	Tx 7,0,0 : CursorX 0 : CursorY 24 : Print SPC(39);/
 	Et 2,0,0 : CursorX 15 : CursorY 24 : Print "NICE_JOB!";/
@@ -264,6 +272,7 @@
 	!LEVEL_COLOR=!LEVEL_COLOR+1 : If !LEVEL_COLOR=4 Then !LEVEL_COLOR=5
 	If !LEVEL_COLOR>7 Then !LEVEL_COLOR=1
 	!LEVEL = !LEVEL + 1 : If !LEVEL>!C_MAX_LEVELS Then Goto @congratulations
+	!NEW_LIFE = !NEW_LIFE + 1 : If !NEW_LIFE = 5 Then goto @gagne_vie
 	goto @main_start
 	
 
@@ -271,6 +280,7 @@
 	Init 0,0/
 	Et 1,1,0 : CursorX 18 : Cursor Y 9 : Print "GAME":CursorX 18 : Cursor Y 10 :Print"GAME"/ 
 	CursorX 18 : Cursor Y 11 : Print "OVER": CursorX 18 : Cursor Y 12 :Print"OVER";
+	Et 7,1,0 : CursorX 5: CursorY 17: Print "FINAL_SCORE:" + Str$(!SCORE):CursorX 5: CursorY 18: Print "FINAL_SCORE:" + Str$(!SCORE)
 	Display 5/
 	Play "T30O1ECDA70"
 	For !FOR_VAR=1 To 10:Next !FOR_VAR/
@@ -281,6 +291,7 @@
 	Init 0,0/
 	Et 3,1,0 : CursorX 13 : Cursor Y 9 : Print "CONGRATULATIONS!":CursorX 13 : Cursor Y 10 :Print"CONGRATULATIONS!"/ 
 	CursorX 5 : Cursor Y 11 : Print "THANK YOU FOR PLAYING MABOOL!":CursorX 5 : Cursor Y 12 :Print"THANK YOU FOR PLAYING MABOOL!"/ 
+	Et 7,1,0 : CursorX 5: CursorY 17: Print "FINAL_SCORE:" + Str$(!SCORE):CursorX 5: CursorY 18: Print "FINAL_SCORE:" + Str$(!SCORE)
 	Display 5
 	Play "T10O3AABBCC50BB50AA70AABBCCEEBBCCAA99"
 	For !FOR_VAR=1 To 5000:Next !FOR_VAR/
