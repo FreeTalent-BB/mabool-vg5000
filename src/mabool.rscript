@@ -40,6 +40,8 @@ Gosub @check_joystick
 Gosub @draw_title
 Gosub @draw_rules
 
+; Test
+
 ; Main loop
 #label root
 	
